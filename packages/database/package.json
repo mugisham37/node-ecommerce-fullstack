@@ -1,0 +1,45 @@
+{
+  "name": "@ecommerce/database",
+  "version": "0.1.0",
+  "description": "Database layer with Drizzle ORM and Kysely query builder",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "generate": "drizzle-kit generate:pg",
+    "migrate": "drizzle-kit push:pg",
+    "studio": "drizzle-kit studio",
+    "seed": "tsx src/seeds/index.ts",
+    "backup": "powershell -ExecutionPolicy Bypass -File ./scripts/backup.ps1",
+    "restore": "powershell -ExecutionPolicy Bypass -File ./scripts/restore.ps1"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.29.0",
+    "kysely": "^0.27.0",
+    "pg": "^8.11.0",
+    "postgres": "^3.4.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.10.0",
+    "@types/uuid": "^9.0.0",
+    "drizzle-kit": "^0.20.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./schema": {
+      "types": "./dist/schema/index.d.ts",
+      "default": "./dist/schema/index.js"
+    },
+    "./connection": {
+      "types": "./dist/connection/index.d.ts",
+      "default": "./dist/connection/index.js"
+    }
+  }
+}
