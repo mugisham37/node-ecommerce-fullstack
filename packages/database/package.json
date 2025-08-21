@@ -40,6 +40,26 @@
     "./connection": {
       "types": "./dist/connection/index.d.ts",
       "default": "./dist/connection/index.js"
+    },
+    "./repositories": {
+      "types": "./dist/repositories/index.d.ts",
+      "default": "./dist/repositories/index.js"
+    },
+    "./query-builder": {
+      "types": "./dist/query-builder/index.d.ts",
+      "default": "./dist/query-builder/index.js"
+    },
+    "./transactions": {
+      "types": "./dist/transactions/index.d.ts",
+      "default": "./dist/transactions/index.js"
+    },
+    "./monitoring": {
+      "types": "./dist/monitoring/index.d.ts",
+      "default": "./dist/monitoring/index.js"
+    },
+    "./health": {
+      "types": "./dist/health/index.d.ts",
+      "default": "./dist/health/index.js"
     }
   }
 }
