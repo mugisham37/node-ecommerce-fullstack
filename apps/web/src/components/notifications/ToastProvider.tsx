@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 
 type ToastType = 'success' | 'error' | 'warning' | 'info';
 
@@ -10,16 +10,21 @@ interface Toast {
   title: string;
   description?: string;
   duration?: number;
+  action?: {
+    label: string;
+    onClick: () => void;
+  };
 }
 
 interface ToastContextType {
   toasts: Toast[];
   toast: (toast: Omit<Toast, 'id'>) => void;
-  success: (title: string, description?: string) => void;
-  error: (title: string, description?: string) => void;
-  warning: (title: string, description?: string) => void;
-  info: (title: string, description?: string) => void;
+  success: (title: string, description?: string, action?: Toast['action']) => void;
+  error: (title: string, description?: string, action?: Toast['action']) => void;
+  warning: (title: string, description?: string, action?: Toast['action']) => void;
+  info: (title: string, description?: string, action?: Toast['action']) => void;
   dismiss: (id: string) => void;
+  dismissAll: () => void;
 }
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
@@ -31,12 +36,20 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     setToasts((prev) => prev.filter((toast) => toast.id !== id));
   }, []);
 
+  const dismissAll = useCallback(() => {
+    setToasts([]);
+  }, []);
+
   const toast = useCallback(
     (toast: Omit<Toast, 'id'>) => {
-      const id = Math.random().toString(36).substring(2, 9);
+      const id = `toast_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       const newToast = { ...toast, id };
       
-      setToasts((prev) => [...prev, newToast]);
+      setToasts((prev) => {
+        // Limit to 5 toasts maximum
+        const updated = [newToast, ...prev].slice(0, 5);
+        return updated;
+      });
 
       // Auto dismiss after duration
       const duration = toast.duration ?? 5000;
@@ -48,32 +61,45 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   );
 
   const success = useCallback(
-    (title: string, description?: string) => {
-      toast({ type: 'success', title, description });
+    (title: string, description?: string, action?: Toast['action']) => {
+      toast({ type: 'success', title, description, action });
     },
     [toast]
   );
 
   const error = useCallback(
-    (title: string, description?: string) => {
-      toast({ type: 'error', title, description });
+    (title: string, description?: string, action?: Toast['action']) => {
+      toast({ type: 'error', title, description, action, duration: 7000 }); // Longer duration for errors
     },
     [toast]
   );
 
   const warning = useCallback(
-    (title: string, description?: string) => {
-      toast({ type: 'warning', title, description });
+    (title: string, description?: string, action?: Toast['action']) => {
+      toast({ type: 'warning', title, description, action, duration: 6000 });
     },
     [toast]
   );
 
   const info = useCallback(
-    (title: string, description?: string) => {
-      toast({ type: 'info', title, description });
+    (title: string, description?: string, action?: Toast['action']) => {
+      toast({ type: 'info', title, description, action });
     },
     [toast]
   );
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Escape to dismiss all toasts
+      if (event.key === 'Escape') {
+        dismissAll();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [dismissAll]);
 
   return (
     <ToastContext.Provider
@@ -85,6 +111,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
         warning,
         info,
         dismiss,
+        dismissAll,
       }}
     >
       {children}
@@ -112,7 +139,7 @@ function ToastContainer({
   if (toasts.length === 0) return null;
 
   return (
-    <div className="fixed top-4 right-4 z-50 space-y-2 max-w-sm">
+    <div className="fixed top-4 right-4 z-50 space-y-2 max-w-sm pointer-events-none">
       {toasts.map((toast) => (
         <ToastItem
           key={toast.id}
@@ -124,7 +151,7 @@ function ToastContainer({
   );
 }
 
-// Individual toast item component with enhanced styling
+// Individual toast item component with enhanced styling and animations
 function ToastItem({
   toast,
   onDismiss,
@@ -132,6 +159,20 @@ function ToastItem({
   toast: Toast;
   onDismiss: (id: string) => void;
 }) {
+  const [isVisible, setIsVisible] = useState(false);
+  const [isExiting, setIsExiting] = useState(false);
+
+  useEffect(() => {
+    // Trigger entrance animation
+    const timer = setTimeout(() => setIsVisible(true), 10);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleDismiss = () => {
+    setIsExiting(true);
+    setTimeout(() => onDismiss(toast.id), 150); // Match animation duration
+  };
+
   const getToastStyles = (type: ToastType) => {
     switch (type) {
       case 'success':
@@ -139,18 +180,21 @@ function ToastItem({
           container: 'bg-green-50 border-green-200 text-green-800',
           icon: '✓',
           iconBg: 'bg-green-100 text-green-600',
+          progressBar: 'bg-green-500',
         };
       case 'error':
         return {
           container: 'bg-red-50 border-red-200 text-red-800',
           icon: '✕',
           iconBg: 'bg-red-100 text-red-600',
+          progressBar: 'bg-red-500',
         };
       case 'warning':
         return {
           container: 'bg-yellow-50 border-yellow-200 text-yellow-800',
           icon: '⚠',
           iconBg: 'bg-yellow-100 text-yellow-600',
+          progressBar: 'bg-yellow-500',
         };
       case 'info':
       default:
@@ -158,6 +202,7 @@ function ToastItem({
           container: 'bg-blue-50 border-blue-200 text-blue-800',
           icon: 'ℹ',
           iconBg: 'bg-blue-100 text-blue-600',
+          progressBar: 'bg-blue-500',
         };
     }
   };
@@ -167,8 +212,13 @@ function ToastItem({
   return (
     <div
       className={`
-        p-4 rounded-lg shadow-lg border transition-all duration-300 ease-in-out
-        transform animate-in slide-in-from-right-full
+        p-4 rounded-lg shadow-lg border transition-all duration-150 ease-in-out pointer-events-auto
+        transform ${isVisible && !isExiting 
+          ? 'translate-x-0 opacity-100 scale-100' 
+          : isExiting 
+            ? 'translate-x-full opacity-0 scale-95'
+            : 'translate-x-full opacity-0 scale-95'
+        }
         ${styles.container}
       `}
     >
@@ -187,12 +237,22 @@ function ToastItem({
           {toast.description && (
             <p className="text-sm mt-1 opacity-90 leading-4">{toast.description}</p>
           )}
+          
+          {/* Action button */}
+          {toast.action && (
+            <button
+              onClick={toast.action.onClick}
+              className="mt-2 text-sm font-medium underline hover:no-underline focus:outline-none focus:ring-2 focus:ring-current focus:ring-opacity-50 rounded"
+            >
+              {toast.action.label}
+            </button>
+          )}
         </div>
         
         {/* Close button */}
         <button
-          onClick={() => onDismiss(toast.id)}
-          className="flex-shrink-0 ml-2 text-lg leading-none opacity-70 hover:opacity-100 transition-opacity"
+          onClick={handleDismiss}
+          className="flex-shrink-0 ml-2 text-lg leading-none opacity-70 hover:opacity-100 transition-opacity focus:outline-none focus:ring-2 focus:ring-current focus:ring-opacity-50 rounded"
           aria-label="Dismiss notification"
         >
           ×
@@ -201,12 +261,11 @@ function ToastItem({
       
       {/* Progress bar for auto-dismiss */}
       {toast.duration && toast.duration > 0 && (
-        <div className="mt-2 h-1 bg-black bg-opacity-10 rounded-full overflow-hidden">
+        <div className="mt-3 h-1 bg-black bg-opacity-10 rounded-full overflow-hidden">
           <div 
-            className="h-full bg-current opacity-30 rounded-full animate-progress"
+            className={`h-full ${styles.progressBar} opacity-60 rounded-full`}
             style={{
-              animationDuration: `${toast.duration}ms`,
-              animationTimingFunction: 'linear',
+              animation: `toast-progress ${toast.duration}ms linear forwards`,
             }}
           />
         </div>
