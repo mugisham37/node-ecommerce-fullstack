@@ -1,0 +1,155 @@
+{
+  "accessControl": {
+    "defaultDeny": true,
+    "principleOfLeastPrivilege": true,
+    "roleBasedAccess": true,
+    "attributeBasedAccess": true,
+    "sessionTimeout": 3600,
+    "maxConcurrentSessions": 3,
+    "ipWhitelisting": false,
+    "geoBlocking": false
+  },
+  "roles": {
+    "super_admin": {
+      "description": "Full system access",
+      "permissions": ["*"],
+      "restrictions": {
+        "requireMFA": true,
+        "ipRestrictions": [],
+        "timeRestrictions": null,
+        "approvalRequired": false
+      }
+    },
+    "admin": {
+      "description": "Administrative access",
+      "permissions": [
+        "users:read",
+        "users:write",
+        "users:delete",
+        "products:read",
+        "products:write",
+        "products:delete",
+        "inventory:read",
+        "inventory:write",
+        "orders:read",
+        "orders:write",
+        "suppliers:read",
+        "suppliers:write",
+        "reports:read",
+        "settings:read",
+        "settings:write"
+      ],
+      "restrictions": {
+        "requireMFA": true,
+        "ipRestrictions": [],
+        "timeRestrictions": null,
+        "approvalRequired": false
+      }
+    },
+    "manager": {
+      "description": "Management level access",
+      "permissions": [
+        "users:read",
+        "products:read",
+        "products:write",
+        "inventory:read",
+        "inventory:write",
+        "orders:read",
+        "orders:write",
+        "suppliers:read",
+        "suppliers:write",
+        "reports:read"
+      ],
+      "restrictions": {
+        "requireMFA": false,
+        "ipRestrictions": [],
+        "timeRestrictions": {
+          "allowedHours": "06:00-22:00",
+          "allowedDays": ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
+        },
+        "approvalRequired": false
+      }
+    },
+    "employee": {
+      "description": "Standard employee access",
+      "permissions": [
+        "products:read",
+        "inventory:read",
+        "inventory:write",
+        "orders:read",
+        "orders:write",
+        "suppliers:read"
+      ],
+      "restrictions": {
+        "requireMFA": false,
+        "ipRestrictions": [],
+        "timeRestrictions": {
+          "allowedHours": "06:00-22:00",
+          "allowedDays": ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
+        },
+        "approvalRequired": false
+      }
+    },
+    "viewer": {
+      "description": "Read-only access",
+      "permissions": [
+        "products:read",
+        "inventory:read",
+        "orders:read",
+        "suppliers:read",
+        "reports:read"
+      ],
+      "restrictions": {
+        "requireMFA": false,
+        "ipRestrictions": [],
+        "timeRestrictions": null,
+        "approvalRequired": false
+      }
+    }
+  },
+  "permissions": {
+    "users:read": "View user information",
+    "users:write": "Create and modify users",
+    "users:delete": "Delete users",
+    "products:read": "View products",
+    "products:write": "Create and modify products",
+    "products:delete": "Delete products",
+    "inventory:read": "View inventory",
+    "inventory:write": "Modify inventory levels",
+    "orders:read": "View orders",
+    "orders:write": "Create and modify orders",
+    "orders:delete": "Delete orders",
+    "suppliers:read": "View suppliers",
+    "suppliers:write": "Create and modify suppliers",
+    "suppliers:delete": "Delete suppliers",
+    "reports:read": "View reports and analytics",
+    "settings:read": "View system settings",
+    "settings:write": "Modify system settings"
+  },
+  "mfa": {
+    "enabled": true,
+    "methods": ["totp", "sms", "email"],
+    "backupCodes": true,
+    "rememberDevice": true,
+    "rememberDeviceDuration": 2592000,
+    "requiredForRoles": ["super_admin", "admin"],
+    "gracePeriod": 86400
+  },
+  "session": {
+    "timeout": 3600,
+    "extendOnActivity": true,
+    "maxExtensions": 5,
+    "absoluteTimeout": 28800,
+    "secureFlag": true,
+    "httpOnlyFlag": true,
+    "sameSiteFlag": "strict"
+  },
+  "audit": {
+    "logAllAccess": true,
+    "logFailedAttempts": true,
+    "logPrivilegedActions": true,
+    "retentionPeriod": 2555,
+    "alertOnSuspiciousActivity": true,
+    "realTimeMonitoring": true
+  }
+}

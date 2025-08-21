@@ -1,0 +1,153 @@
+{
+  "dataProtection": {
+    "encryptionAtRest": true,
+    "encryptionInTransit": true,
+    "encryptionAlgorithm": "AES-256-GCM",
+    "keyRotationInterval": 90,
+    "dataClassification": true,
+    "dataRetention": true,
+    "rightToBeForgotten": true,
+    "dataMinimization": true
+  },
+  "dataClassification": {
+    "public": {
+      "description": "Information that can be freely shared",
+      "examples": ["product catalog", "public documentation"],
+      "encryption": false,
+      "accessControl": "none",
+      "retention": "indefinite"
+    },
+    "internal": {
+      "description": "Information for internal use only",
+      "examples": ["internal procedures", "employee directory"],
+      "encryption": true,
+      "accessControl": "authenticated",
+      "retention": "7 years"
+    },
+    "confidential": {
+      "description": "Sensitive business information",
+      "examples": ["financial data", "customer information"],
+      "encryption": true,
+      "accessControl": "role-based",
+      "retention": "7 years"
+    },
+    "restricted": {
+      "description": "Highly sensitive information",
+      "examples": ["payment data", "personal identification"],
+      "encryption": true,
+      "accessControl": "strict",
+      "retention": "as required by law",
+      "specialHandling": true
+    }
+  },
+  "personalData": {
+    "gdprCompliance": true,
+    "ccpaCompliance": true,
+    "consentManagement": true,
+    "dataSubjectRights": {
+      "accessRight": true,
+      "rectificationRight": true,
+      "erasureRight": true,
+      "portabilityRight": true,
+      "restrictionRight": true,
+      "objectionRight": true
+    },
+    "lawfulBasis": [
+      "consent",
+      "contract",
+      "legal_obligation",
+      "vital_interests",
+      "public_task",
+      "legitimate_interests"
+    ],
+    "dataProcessingPurposes": [
+      "service_provision",
+      "customer_support",
+      "legal_compliance",
+      "security",
+      "analytics"
+    ]
+  },
+  "encryption": {
+    "algorithms": {
+      "symmetric": "AES-256-GCM",
+      "asymmetric": "RSA-4096",
+      "hashing": "SHA-256",
+      "keyDerivation": "PBKDF2"
+    },
+    "keyManagement": {
+      "provider": "aws-kms",
+      "rotationInterval": 90,
+      "backupKeys": true,
+      "escrowKeys": false,
+      "multiPartyControl": true
+    },
+    "fieldLevelEncryption": {
+      "enabled": true,
+      "fields": [
+        "users.email",
+        "users.phone",
+        "users.address",
+        "orders.payment_info",
+        "suppliers.contact_info"
+      ]
+    }
+  },
+  "dataRetention": {
+    "defaultRetention": "7 years",
+    "categories": {
+      "user_data": {
+        "retention": "7 years after account closure",
+        "exceptions": ["legal hold", "ongoing investigation"]
+      },
+      "transaction_data": {
+        "retention": "10 years",
+        "exceptions": ["tax requirements", "audit requirements"]
+      },
+      "log_data": {
+        "retention": "2 years",
+        "exceptions": ["security incidents", "compliance requirements"]
+      },
+      "backup_data": {
+        "retention": "1 year",
+        "exceptions": ["disaster recovery", "business continuity"]
+      }
+    },
+    "automaticDeletion": true,
+    "deletionVerification": true,
+    "legalHoldProcess": true
+  },
+  "dataTransfer": {
+    "crossBorderTransfers": true,
+    "adequacyDecisions": ["EU", "UK", "Canada"],
+    "standardContractualClauses": true,
+    "bindingCorporateRules": false,
+    "certifications": ["Privacy Shield successor"],
+    "transferImpactAssessment": true
+  },
+  "breach": {
+    "detectionMechanisms": [
+      "automated_monitoring",
+      "user_reports",
+      "security_scans",
+      "audit_findings"
+    ],
+    "responseTime": "72 hours",
+    "notificationRequirements": {
+      "supervisoryAuthority": "72 hours",
+      "dataSubjects": "without undue delay",
+      "conditions": ["high risk to rights and freedoms"]
+    },
+    "documentationRequirements": true,
+    "forensicPreservation": true
+  },
+  "compliance": {
+    "frameworks": ["GDPR", "CCPA", "PIPEDA", "SOX", "PCI-DSS"],
+    "regularAssessments": true,
+    "assessmentFrequency": "annually",
+    "thirdPartyAudits": true,
+    "certifications": ["ISO 27001", "SOC 2 Type II"],
+    "privacyByDesign": true,
+    "privacyByDefault": true
+  }
+}

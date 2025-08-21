@@ -1,0 +1,264 @@
+{
+  "incidentResponse": {
+    "enabled": true,
+    "responseTeam": {
+      "incidentCommander": "security@company.com",
+      "technicalLead": "devops@company.com",
+      "communicationsLead": "communications@company.com",
+      "legalCounsel": "legal@company.com",
+      "executiveSponsor": "ciso@company.com"
+    },
+    "escalationMatrix": {
+      "low": {
+        "responseTime": "4 hours",
+        "escalationLevel": "team_lead",
+        "notificationRequired": false
+      },
+      "medium": {
+        "responseTime": "2 hours",
+        "escalationLevel": "security_manager",
+        "notificationRequired": true
+      },
+      "high": {
+        "responseTime": "1 hour",
+        "escalationLevel": "ciso",
+        "notificationRequired": true
+      },
+      "critical": {
+        "responseTime": "30 minutes",
+        "escalationLevel": "executive_team",
+        "notificationRequired": true
+      }
+    }
+  },
+  "incidentTypes": {
+    "data_breach": {
+      "severity": "high",
+      "description": "Unauthorized access to sensitive data",
+      "responseActions": [
+        "isolate_affected_systems",
+        "preserve_evidence",
+        "assess_data_impact",
+        "notify_authorities",
+        "notify_affected_users"
+      ],
+      "legalRequirements": true,
+      "regulatoryNotification": "72 hours"
+    },
+    "malware_infection": {
+      "severity": "medium",
+      "description": "Malicious software detected",
+      "responseActions": [
+        "isolate_infected_systems",
+        "run_antimalware_scan",
+        "restore_from_backup",
+        "update_security_controls"
+      ],
+      "legalRequirements": false,
+      "regulatoryNotification": null
+    },
+    "ddos_attack": {
+      "severity": "high",
+      "description": "Distributed denial of service attack",
+      "responseActions": [
+        "activate_ddos_protection",
+        "scale_infrastructure",
+        "block_malicious_traffic",
+        "communicate_with_users"
+      ],
+      "legalRequirements": false,
+      "regulatoryNotification": null
+    },
+    "insider_threat": {
+      "severity": "high",
+      "description": "Malicious activity by internal user",
+      "responseActions": [
+        "disable_user_access",
+        "preserve_evidence",
+        "conduct_investigation",
+        "involve_hr_legal",
+        "review_access_controls"
+      ],
+      "legalRequirements": true,
+      "regulatoryNotification": "case_by_case"
+    },
+    "system_compromise": {
+      "severity": "critical",
+      "description": "Unauthorized access to critical systems",
+      "responseActions": [
+        "isolate_compromised_systems",
+        "activate_incident_response_team",
+        "preserve_forensic_evidence",
+        "assess_damage_scope",
+        "implement_containment_measures",
+        "notify_stakeholders"
+      ],
+      "legalRequirements": true,
+      "regulatoryNotification": "immediate"
+    }
+  },
+  "responsePhases": {
+    "preparation": {
+      "activities": [
+        "maintain_incident_response_plan",
+        "train_response_team",
+        "establish_communication_channels",
+        "prepare_response_tools",
+        "conduct_tabletop_exercises"
+      ],
+      "frequency": "ongoing"
+    },
+    "identification": {
+      "activities": [
+        "detect_security_events",
+        "analyze_potential_incidents",
+        "classify_incident_severity",
+        "document_initial_findings",
+        "activate_response_team"
+      ],
+      "timeframe": "immediate"
+    },
+    "containment": {
+      "shortTerm": [
+        "isolate_affected_systems",
+        "prevent_further_damage",
+        "preserve_evidence",
+        "implement_temporary_fixes"
+      ],
+      "longTerm": [
+        "rebuild_compromised_systems",
+        "implement_permanent_fixes",
+        "update_security_controls",
+        "validate_containment_effectiveness"
+      ]
+    },
+    "eradication": {
+      "activities": [
+        "remove_malicious_artifacts",
+        "patch_vulnerabilities",
+        "update_security_configurations",
+        "strengthen_security_controls",
+        "validate_system_integrity"
+      ]
+    },
+    "recovery": {
+      "activities": [
+        "restore_systems_from_backups",
+        "validate_system_functionality",
+        "monitor_for_suspicious_activity",
+        "gradually_restore_services",
+        "communicate_service_restoration"
+      ]
+    },
+    "lessonsLearned": {
+      "activities": [
+        "conduct_post_incident_review",
+        "document_lessons_learned",
+        "update_incident_response_plan",
+        "improve_security_controls",
+        "provide_additional_training"
+      ],
+      "timeframe": "within_30_days"
+    }
+  },
+  "communication": {
+    "internal": {
+      "stakeholders": [
+        "incident_response_team",
+        "executive_leadership",
+        "legal_team",
+        "hr_team",
+        "affected_departments"
+      ],
+      "channels": [
+        "secure_messaging",
+        "conference_calls",
+        "status_updates",
+        "executive_briefings"
+      ]
+    },
+    "external": {
+      "stakeholders": [
+        "customers",
+        "partners",
+        "vendors",
+        "regulatory_authorities",
+        "law_enforcement",
+        "media"
+      ],
+      "approval_required": true,
+      "templates": {
+        "customer_notification": "templates/customer_breach_notification.html",
+        "regulatory_notification": "templates/regulatory_breach_notification.html",
+        "media_statement": "templates/media_statement.html"
+      }
+    }
+  },
+  "documentation": {
+    "required_records": [
+      "incident_timeline",
+      "actions_taken",
+      "evidence_collected",
+      "communications_sent",
+      "costs_incurred",
+      "lessons_learned"
+    ],
+    "retention_period": "7 years",
+    "access_controls": "restricted",
+    "backup_locations": ["secure_cloud", "offline_storage"]
+  },
+  "legal_regulatory": {
+    "notification_requirements": {
+      "gdpr": {
+        "authority": "supervisory_authority",
+        "timeframe": "72 hours",
+        "conditions": ["personal_data_breach"]
+      },
+      "ccpa": {
+        "authority": "attorney_general",
+        "timeframe": "without_unreasonable_delay",
+        "conditions": ["consumer_personal_information"]
+      },
+      "pci_dss": {
+        "authority": "card_brands",
+        "timeframe": "immediately",
+        "conditions": ["cardholder_data_compromise"]
+      }
+    },
+    "law_enforcement": {
+      "contact_criteria": [
+        "criminal_activity_suspected",
+        "significant_financial_loss",
+        "national_security_implications"
+      ],
+      "cooperation_level": "full_cooperation",
+      "evidence_preservation": "mandatory"
+    }
+  },
+  "testing": {
+    "tabletop_exercises": {
+      "frequency": "quarterly",
+      "scenarios": [
+        "data_breach",
+        "ransomware_attack",
+        "insider_threat",
+        "supply_chain_compromise"
+      ],
+      "participants": "all_response_team_members"
+    },
+    "simulation_exercises": {
+      "frequency": "annually",
+      "scope": "full_incident_response",
+      "external_facilitator": true
+    },
+    "plan_updates": {
+      "frequency": "annually",
+      "triggers": [
+        "after_real_incident",
+        "after_exercise",
+        "organizational_changes",
+        "technology_changes"
+      ]
+    }
+  }
+}
