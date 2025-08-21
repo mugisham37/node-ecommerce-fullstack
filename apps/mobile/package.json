@@ -60,7 +60,18 @@
     "date-fns": "^3.2.0",
     "react-hook-form": "^7.48.2",
     "@hookform/resolvers": "^3.3.2",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "@react-native-firebase/app": "^18.7.3",
+    "@react-native-firebase/messaging": "^18.7.3",
+    "@react-native-firebase/analytics": "^18.7.3",
+    "react-native-push-notification": "^8.1.1",
+    "@react-native-community/push-notification-ios": "^1.11.0",
+    "react-native-background-job": "^1.2.0",
+    "@react-native-community/netinfo": "^11.2.1",
+    "react-native-sqlite-storage": "^6.0.1",
+    "react-native-mmkv": "^2.11.0",
+    "react-native-background-sync": "^1.0.1",
+    "react-native-queue": "^1.0.11"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

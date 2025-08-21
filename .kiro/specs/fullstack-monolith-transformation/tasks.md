@@ -496,7 +496,7 @@
   - **CREATE**: apps/mobile/src/hooks/useOrders.ts (mobile-specific)
   - _Requirements: 5.4_
 
-- [ ] 28. Implement Mobile Push Notifications and Offline Support
+- [x] 28. Implement Mobile Push Notifications and Offline Support
 
   - **CREATE**: apps/mobile/src/services/NotificationService.ts
   - **CREATE**: apps/mobile/src/services/OfflineStorage.ts
