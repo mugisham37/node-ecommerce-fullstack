@@ -1,8 +1,8 @@
-// Export all schemas and types
-export * from './user';
-export * from './product';
-export * from './category';
-export * from './supplier';
-export * from './inventory';
+/**
+ * Centralized schemas for the application
+ * These schemas combine validators to create complete validation schemas
+ */
+
+import { zrom './inventory';
 export * from './order';
 export * from './common';

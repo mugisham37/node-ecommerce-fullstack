@@ -1,7 +1,7 @@
 {
   "name": "@ecommerce/validation",
   "version": "1.0.0",
-  "description": "Shared validation schemas using Zod",
+  "description": "Validation schemas and utilities using Zod for the e-commerce monolith",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -11,13 +11,12 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "zod": "^3.22.4",
+    "zod": "^3.22.0",
     "@ecommerce/shared": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^20.10.0",
-    "rimraf": "^5.0.5",
-    "typescript": "^5.3.0"
+    "typescript": "^5.0.0",
+    "rimraf": "^5.0.0"
   },
   "exports": {
     ".": {
@@ -25,10 +24,33 @@
       "import": "./dist/index.js",
       "require": "./dist/index.js"
     },
-    "./schemas": {
-      "types": "./dist/schemas/index.d.ts",
-      "import": "./dist/schemas/index.js",
-      "require": "./dist/schemas/index.js"
+    "./validators": {
+      "types": "./dist/validators/index.d.ts",
+      "import": "./dist/validators/index.js",
+      "require": "./dist/validators/index.js"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "import": "./dist/utils/index.js",
+      "require": "./dist/utils/index.js"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.js",
+      "require": "./dist/types/index.js"
     }
-  }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "keywords": [
+    "validation",
+    "zod",
+    "schemas",
+    "typescript",
+    "utilities"
+  ],
+  "author": "E-commerce Team",
+  "license": "MIT"
 }
