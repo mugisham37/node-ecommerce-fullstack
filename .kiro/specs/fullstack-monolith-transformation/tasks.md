@@ -213,7 +213,12 @@
   - **CREATE**: File cleanup procedures in apps/api/src/services/storage/CleanupService.ts
   - _Requirements: 2.8_
 
-- [ ] 11. Convert Scheduled Tasks and Background Jobs
+- [x] 11. Convert Scheduled Tasks and Background Jobs
+
+
+
+
+
 
   - **MOVE**: Scheduled task logic from temp-api/src/main/java/com/ecommerce/inventory/service/ → apps/api/src/jobs/
     ```powershell
