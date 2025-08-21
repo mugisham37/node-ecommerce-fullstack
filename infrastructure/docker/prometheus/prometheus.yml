@@ -1,0 +1,53 @@
+# Prometheus configuration for monitoring
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # API application metrics
+  - job_name: 'ecommerce-api'
+    static_configs:
+      - targets: ['ecommerce-api-prod:4000']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  # Web application metrics
+  - job_name: 'ecommerce-web'
+    static_configs:
+      - targets: ['ecommerce-web-prod:3000']
+    metrics_path: '/api/metrics'
+    scrape_interval: 30s
+
+  # PostgreSQL metrics
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['ecommerce-postgres-prod:5432']
+    scrape_interval: 30s
+
+  # Redis metrics
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['ecommerce-redis-prod:6379']
+    scrape_interval: 30s
+
+  # Nginx metrics
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['ecommerce-nginx-prod:80']
+    metrics_path: '/nginx_status'
+    scrape_interval: 30s
+
+  # Node exporter for system metrics
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+    scrape_interval: 30s
