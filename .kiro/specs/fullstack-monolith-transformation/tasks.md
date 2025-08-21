@@ -347,7 +347,12 @@
   - **CREATE**: apps/web/src/store/productStore.ts
   - _Requirements: 4.3_
 
-- [ ] 18. Develop Inventory Management System
+- [x] 18. Develop Inventory Management System
+
+
+
+
+
 
   - **CREATE**: apps/web/src/app/(dashboard)/inventory/page.tsx
   - **CREATE**: apps/web/src/app/(dashboard)/inventory/adjustments/page.tsx
