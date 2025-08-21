@@ -194,7 +194,12 @@
   - **CREATE**: Event retry mechanism in apps/api/src/events/retry/
   - **CREATE**: Dead letter queue in apps/api/src/events/dlq/
   - _Requirements: 2.5_
-- [ ] 10. Migrate File Storage and Processing
+- [x] 10. Migrate File Storage and Processing
+
+
+
+
+
 
   - **MOVE**: File storage logic from temp-api/src/main/java/com/ecommerce/inventory/service/storage/ → apps/api/src/services/storage/
     ```powershell
