@@ -48,7 +48,20 @@ export interface BaseEntity {
 }
 
 // User roles
-export type UserRole = 'ADMIN' | 'MANAGER' | 'USER' | 'VIEWER';
+export enum UserRole {
+  ADMIN = 'ADMIN',
+  MANAGER = 'MANAGER',
+  USER = 'USER',
+  VIEWER = 'VIEWER'
+}
+
+// User interface
+export interface User extends BaseEntity {
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: UserRole;
+}
 
 // Order statuses
 export type OrderStatus = 

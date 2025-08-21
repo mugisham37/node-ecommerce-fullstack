@@ -21,7 +21,12 @@
     "zustand": "^4.4.7",
     "superjson": "^2.2.1",
     "clsx": "^2.0.0",
-    "tailwind-merge": "^2.2.0"
+    "tailwind-merge": "^2.2.0",
+    "react-hook-form": "^7.48.2",
+    "@hookform/resolvers": "^3.3.2",
+    "zod": "^3.22.4",
+    "@ecommerce/shared": "workspace:*",
+    "@ecommerce/validation": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5",

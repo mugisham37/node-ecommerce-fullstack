@@ -1,8 +1,7 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create, persist } from '@/lib/mocks';
 
-// TODO: Replace with actual User type from @ecommerce/shared
-export interface User {
+// Temporary User type until proper packages are installed
+interface User {
   id: string;
   email: string;
   firstName: string;
@@ -39,7 +38,7 @@ const initialState: AuthState = {
 
 export const useAuthStore = create<AuthStore>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       ...initialState,
       
       setUser: (user: User) => {
@@ -88,7 +87,7 @@ export const useAuthStore = create<AuthStore>()(
     }),
     {
       name: 'auth-storage',
-      partialize: (state) => ({
+      partialize: (state: AuthStore) => ({
         user: state.user,
         token: state.token,
         isAuthenticated: state.isAuthenticated,
@@ -98,13 +97,13 @@ export const useAuthStore = create<AuthStore>()(
 );
 
 // Selectors for better performance
-export const useAuth = () => useAuthStore((state) => ({
+export const useAuthState = () => useAuthStore((state: AuthStore) => ({
   user: state.user,
   isAuthenticated: state.isAuthenticated,
   isLoading: state.isLoading,
 }));
 
-export const useAuthActions = () => useAuthStore((state) => ({
+export const useAuthActions = () => useAuthStore((state: AuthStore) => ({
   login: state.login,
   logout: state.logout,
   setLoading: state.setLoading,

@@ -1,21 +1,18 @@
 'use client';
 
-import { TRPCProvider } from './trpc-provider';
-import { ThemeProvider } from './theme-provider';
-import { ToastProvider } from './toast-provider';
+import { TRPCProvider } from './TRPCProvider';
+import { AuthProvider } from './AuthProvider';
 
-export function Providers({ children }: { children: React.ReactNode }) {
-  return (
-    <ThemeProvider defaultTheme="system" storageKey="ecommerce-ui-theme">
-      <TRPCProvider>
-        <ToastProvider>
-          {children}
-        </ToastProvider>
-      </TRPCProvider>
-    </ThemeProvider>
-  );
+interface ProvidersProps {
+  children: React.ReactNode;
 }
 
-export { useTheme } from './theme-provider';
-export { useToast } from './toast-provider';
-export { api } from './trpc-provider';
+export const Providers = ({ children }: ProvidersProps) => {
+  return (
+    <TRPCProvider>
+      <AuthProvider>
+        {children}
+      </AuthProvider>
+    </TRPCProvider>
+  );
+};

@@ -1,7 +1,7 @@
 // Auth store
 export {
   useAuthStore,
-  useAuth,
+  useAuthState,
   useAuthActions,
 } from './auth-store';
 
@@ -14,5 +14,4 @@ export {
   useGlobalError,
 } from './ui-store';
 
-// Re-export types
-export type { User } from './auth-store';
+// User type will be available once proper packages are installed

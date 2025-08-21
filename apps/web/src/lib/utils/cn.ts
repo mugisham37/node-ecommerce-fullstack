@@ -1,10 +1,9 @@
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+// Simple className utility without external dependencies
+export type ClassValue = string | number | boolean | undefined | null | ClassValue[];
 
-/**
- * Utility function to merge Tailwind CSS classes with clsx
- * This function combines clsx for conditional classes and tailwind-merge for deduplication
- */
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
+export function cn(...inputs: ClassValue[]): string {
+  return inputs
+    .filter(Boolean)
+    .join(' ')
+    .trim();
 }
