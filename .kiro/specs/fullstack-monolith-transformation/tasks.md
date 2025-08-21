@@ -105,7 +105,12 @@
 
 ## Phase 3: Backend API Transformation
 
-- [ ] 6. Convert Spring Boot Controllers to tRPC Routers
+- [x] 6. Convert Spring Boot Controllers to tRPC Routers
+
+
+
+
+
 
   - **MOVE**: Controller logic from temp-api/src/main/java/com/ecommerce/inventory/controller/ → apps/api/src/trpc/routers/
     ```powershell
