@@ -1,0 +1,44 @@
+{
+  "name": "EcommerceInventory",
+  "displayName": "E-commerce Inventory",
+  "version": "1.0.0",
+  "versionCode": 1,
+  "buildNumber": 1,
+  "description": "Mobile inventory management application for e-commerce platform",
+  "orientation": "portrait",
+  "icon": "./assets/icon.png",
+  "splash": {
+    "image": "./assets/splash.png",
+    "resizeMode": "contain",
+    "backgroundColor": "#ffffff"
+  },
+  "platforms": ["ios", "android"],
+  "ios": {
+    "bundleIdentifier": "com.ecommerce.inventory",
+    "buildNumber": "1.0.0",
+    "supportsTablet": true,
+    "infoPlist": {
+      "NSCameraUsageDescription": "This app needs access to camera to scan barcodes and take product photos.",
+      "NSPhotoLibraryUsageDescription": "This app needs access to photo library to select product images.",
+      "NSLocationWhenInUseUsageDescription": "This app needs location access for inventory tracking and warehouse management."
+    }
+  },
+  "android": {
+    "package": "com.ecommerce.inventory",
+    "versionCode": 1,
+    "permissions": [
+      "CAMERA",
+      "READ_EXTERNAL_STORAGE",
+      "WRITE_EXTERNAL_STORAGE",
+      "ACCESS_FINE_LOCATION",
+      "ACCESS_COARSE_LOCATION",
+      "VIBRATE",
+      "INTERNET",
+      "ACCESS_NETWORK_STATE"
+    ],
+    "adaptiveIcon": {
+      "foregroundImage": "./assets/adaptive-icon.png",
+      "backgroundColor": "#FFFFFF"
+    }
+  }
+}
