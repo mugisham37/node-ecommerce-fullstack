@@ -379,7 +379,12 @@
   - **CREATE**: apps/web/src/store/orderStore.ts
   - _Requirements: 4.4_
 
-- [ ] 20. Develop Supplier Management System
+- [x] 20. Develop Supplier Management System
+
+
+
+
+
 
   - **CREATE**: apps/web/src/app/(dashboard)/suppliers/page.tsx
   - **CREATE**: apps/web/src/app/(dashboard)/suppliers/[id]/page.tsx
@@ -390,7 +395,19 @@
   - **CREATE**: apps/web/src/store/supplierStore.ts
   - _Requirements: 4.5_
 
-- [ ] 21. Build Analytics and Reporting Dashboard
+- [x] 21. Build Analytics and Reporting Dashboard
+
+
+
+
+
+
+
+
+
+
+
+
 
   - **CREATE**: apps/web/src/app/(dashboard)/analytics/page.tsx
   - **CREATE**: apps/web/src/app/(dashboard)/reports/page.tsx
