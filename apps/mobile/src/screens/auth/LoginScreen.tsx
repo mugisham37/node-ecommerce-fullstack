@@ -1,137 +1,98 @@
-import React, {useState} from 'react';
-import {View, StyleSheet, ScrollView} from 'react-native';
-import {Button, Text, TextInput, Card, Divider} from 'react-native-paper';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {useForm, Controller} from 'react-hook-form';
-import {zodResolver} from '@hookform/resolvers/zod';
-import {z} from 'zod';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import { LoginForm } from '../../components/forms/LoginForm';
+import { useAuth } from '../../hooks/useAuth';
+import { BiometricService } from '../../services/BiometricService';
 
-import {NavigationProps} from '@/navigation/AppNavigator';
-import {useAuth} from '@/hooks/useAuth';
-import {theme} from '@/constants/theme';
+export const LoginScreen: React.FC = () => {
+  const navigation = useNavigation();
+  const { login, isLoading } = useAuth();
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
 
-const loginSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-});
+  React.useEffect(() => {
+    checkBiometricAvailability();
+  }, []);
 
-type LoginFormData = z.infer<typeof loginSchema>;
+  const checkBiometricAvailability = async () => {
+    const available = await BiometricService.isBiometricAvailable();
+    setBiometricAvailable(available);
+  };
 
-export const LoginScreen: React.FC<NavigationProps> = ({navigation}) => {
-  const [showPassword, setShowPassword] = useState(false);
-  const {login, isLoading} = useAuth();
-
-  const {
-    control,
-    handleSubmit,
-    formState: {errors},
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
-  });
-
-  const onSubmit = async (data: LoginFormData) => {
+  const handleLogin = async (credentials: { email: string; password: string }) => {
     try {
-      await login(data.email, data.password);
+      await login(credentials);
+      navigation.navigate('Dashboard' as never);
     } catch (error) {
-      console.error('Login error:', error);
+      Alert.alert('Login Failed', 'Invalid credentials. Please try again.');
     }
+  };
+
+  const handleBiometricLogin = async () => {
+    try {
+      const success = await BiometricService.authenticate();
+      if (success) {
+        // Retrieve stored credentials and login
+        const credentials = await BiometricService.getStoredCredentials();
+        if (credentials) {
+          await login(credentials);
+          navigation.navigate('Dashboard' as never);
+        }
+      }
+    } catch (error) {
+      Alert.alert('Biometric Authentication Failed', 'Please try again or use password.');
+    }
+  };
+
+  const navigateToRegister = () => {
+    navigation.navigate('Register' as never);
+  };
+
+  const navigateToForgotPassword = () => {
+    navigation.navigate('ForgotPassword' as never);
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.header}>
-          <Text variant="headlineMedium" style={styles.title}>
-            Welcome Back
-          </Text>
-          <Text variant="bodyLarge" style={styles.subtitle}>
-            Sign in to your account
-          </Text>
-        </View>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardAvoid}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Welcome Back</Text>
+            <Text style={styles.subtitle}>Sign in to your account</Text>
+          </View>
 
-        <Card style={styles.card}>
-          <Card.Content style={styles.cardContent}>
-            <Controller
-              control={control}
-              name="email"
-              render={({field: {onChange, onBlur, value}}) => (
-                <TextInput
-                  label="Email"
-                  value={value}
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  error={!!errors.email}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  autoComplete="email"
-                  style={styles.input}
-                />
-              )}
-            />
-            {errors.email && (
-              <Text style={styles.errorText}>{errors.email.message}</Text>
-            )}
+          <LoginForm
+            onSubmit={handleLogin}
+            isLoading={isLoading}
+            biometricAvailable={biometricAvailable}
+            onBiometricLogin={handleBiometricLogin}
+          />
 
-            <Controller
-              control={control}
-              name="password"
-              render={({field: {onChange, onBlur, value}}) => (
-                <TextInput
-                  label="Password"
-                  value={value}
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  error={!!errors.password}
-                  secureTextEntry={!showPassword}
-                  right={
-                    <TextInput.Icon
-                      icon={showPassword ? 'eye-off' : 'eye'}
-                      onPress={() => setShowPassword(!showPassword)}
-                    />
-                  }
-                  style={styles.input}
-                />
-              )}
-            />
-            {errors.password && (
-              <Text style={styles.errorText}>{errors.password.message}</Text>
-            )}
-
-            <Button
-              mode="text"
-              onPress={() => navigation.navigate('ForgotPassword')}
-              style={styles.forgotButton}>
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>
+              Don't have an account?{' '}
+              <Text style={styles.link} onPress={navigateToRegister}>
+                Sign up
+              </Text>
+            </Text>
+            <Text style={styles.link} onPress={navigateToForgotPassword}>
               Forgot Password?
-            </Button>
-
-            <Button
-              mode="contained"
-              onPress={handleSubmit(onSubmit)}
-              loading={isLoading}
-              disabled={isLoading}
-              style={styles.loginButton}
-              contentStyle={styles.buttonContent}>
-              Sign In
-            </Button>
-
-            <Divider style={styles.divider} />
-
-            <View style={styles.signupContainer}>
-              <Text variant="bodyMedium">Don't have an account? </Text>
-              <Button
-                mode="text"
-                onPress={() => navigation.navigate('Register')}
-                compact>
-                Sign Up
-              </Button>
-            </View>
-          </Card.Content>
-        </Card>
-      </ScrollView>
+            </Text>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -139,59 +100,41 @@ export const LoginScreen: React.FC<NavigationProps> = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: '#f8f9fa',
+  },
+  keyboardAvoid: {
+    flex: 1,
   },
   scrollContent: {
     flexGrow: 1,
-    padding: 24,
+    justifyContent: 'center',
+    padding: 20,
   },
   header: {
     alignItems: 'center',
-    marginTop: 40,
-    marginBottom: 32,
+    marginBottom: 40,
   },
   title: {
-    textAlign: 'center',
-    marginBottom: 8,
-    color: theme.colors.onBackground,
+    fontSize: 28,
     fontWeight: 'bold',
+    color: '#1a1a1a',
+    marginBottom: 8,
   },
   subtitle: {
-    textAlign: 'center',
-    color: theme.colors.onSurfaceVariant,
+    fontSize: 16,
+    color: '#666',
   },
-  card: {
-    flex: 1,
-  },
-  cardContent: {
-    padding: 24,
-  },
-  input: {
-    marginBottom: 8,
-  },
-  errorText: {
-    color: theme.colors.error,
-    fontSize: 12,
-    marginBottom: 16,
-    marginLeft: 16,
-  },
-  forgotButton: {
-    alignSelf: 'flex-end',
-    marginBottom: 24,
-  },
-  loginButton: {
-    borderRadius: 8,
-    marginBottom: 24,
-  },
-  buttonContent: {
-    paddingVertical: 8,
-  },
-  divider: {
-    marginBottom: 24,
-  },
-  signupContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+  footer: {
     alignItems: 'center',
+    marginTop: 30,
+  },
+  footerText: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 10,
+  },
+  link: {
+    color: '#007bff',
+    fontWeight: '600',
   },
 });

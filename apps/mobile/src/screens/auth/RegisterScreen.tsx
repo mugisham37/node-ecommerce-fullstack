@@ -1,99 +1,87 @@
-import React, {useState} from 'react';
-import {View, StyleSheet, ScrollView} from 'react-native';
-import {Button, Text, TextInput, Card} from 'react-native-paper';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {NavigationProps} from '@/navigation/AppNavigator';
-import {theme} from '@/constants/theme';
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import { RegisterForm } from '../../components/forms/RegisterForm';
+import { useAuth } from '../../hooks/useAuth';
 
-export const RegisterScreen: React.FC<NavigationProps> = ({navigation}) => {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  });
-  const [showPassword, setShowPassword] = useState(false);
+interface RegisterData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
+export const RegisterScreen: React.FC = () => {
+  const navigation = useNavigation();
+  const { register, isLoading } = useAuth();
+
+  const handleRegister = async (data: RegisterData) => {
+    if (data.password !== data.confirmPassword) {
+      Alert.alert('Error', 'Passwords do not match');
+      return;
+    }
+
+    try {
+      await register({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        password: data.password,
+      });
+      
+      Alert.alert(
+        'Registration Successful',
+        'Please check your email to verify your account.',
+        [
+          {
+            text: 'OK',
+            onPress: () => navigation.navigate('Login' as never),
+          },
+        ]
+      );
+    } catch (error) {
+      Alert.alert('Registration Failed', 'Please try again with different details.');
+    }
+  };
+
+  const navigateToLogin = () => {
+    navigation.navigate('Login' as never);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.header}>
-          <Text variant="headlineMedium" style={styles.title}>
-            Create Account
-          </Text>
-          <Text variant="bodyLarge" style={styles.subtitle}>
-            Join us to manage your inventory
-          </Text>
-        </View>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardAvoid}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Create Account</Text>
+            <Text style={styles.subtitle}>Join us to get started</Text>
+          </View>
 
-        <Card style={styles.card}>
-          <Card.Content style={styles.cardContent}>
-            <TextInput
-              label="First Name"
-              value={formData.firstName}
-              onChangeText={(text) => setFormData({...formData, firstName: text})}
-              style={styles.input}
-            />
-            
-            <TextInput
-              label="Last Name"
-              value={formData.lastName}
-              onChangeText={(text) => setFormData({...formData, lastName: text})}
-              style={styles.input}
-            />
+          <RegisterForm onSubmit={handleRegister} isLoading={isLoading} />
 
-            <TextInput
-              label="Email"
-              value={formData.email}
-              onChangeText={(text) => setFormData({...formData, email: text})}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              style={styles.input}
-            />
-
-            <TextInput
-              label="Password"
-              value={formData.password}
-              onChangeText={(text) => setFormData({...formData, password: text})}
-              secureTextEntry={!showPassword}
-              right={
-                <TextInput.Icon
-                  icon={showPassword ? 'eye-off' : 'eye'}
-                  onPress={() => setShowPassword(!showPassword)}
-                />
-              }
-              style={styles.input}
-            />
-
-            <TextInput
-              label="Confirm Password"
-              value={formData.confirmPassword}
-              onChangeText={(text) => setFormData({...formData, confirmPassword: text})}
-              secureTextEntry={!showPassword}
-              style={styles.input}
-            />
-
-            <Button
-              mode="contained"
-              onPress={() => {/* TODO: Implement registration */}}
-              style={styles.registerButton}
-              contentStyle={styles.buttonContent}>
-              Create Account
-            </Button>
-
-            <View style={styles.loginContainer}>
-              <Text variant="bodyMedium">Already have an account? </Text>
-              <Button
-                mode="text"
-                onPress={() => navigation.navigate('Login')}
-                compact>
-                Sign In
-              </Button>
-            </View>
-          </Card.Content>
-        </Card>
-      </ScrollView>
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>
+              Already have an account?{' '}
+              <Text style={styles.link} onPress={navigateToLogin}>
+                Sign in
+              </Text>
+            </Text>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -101,47 +89,40 @@ export const RegisterScreen: React.FC<NavigationProps> = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: '#f8f9fa',
+  },
+  keyboardAvoid: {
+    flex: 1,
   },
   scrollContent: {
     flexGrow: 1,
-    padding: 24,
+    justifyContent: 'center',
+    padding: 20,
   },
   header: {
     alignItems: 'center',
-    marginTop: 40,
-    marginBottom: 32,
+    marginBottom: 40,
   },
   title: {
-    textAlign: 'center',
-    marginBottom: 8,
-    color: theme.colors.onBackground,
+    fontSize: 28,
     fontWeight: 'bold',
+    color: '#1a1a1a',
+    marginBottom: 8,
   },
   subtitle: {
-    textAlign: 'center',
-    color: theme.colors.onSurfaceVariant,
+    fontSize: 16,
+    color: '#666',
   },
-  card: {
-    flex: 1,
-  },
-  cardContent: {
-    padding: 24,
-  },
-  input: {
-    marginBottom: 16,
-  },
-  registerButton: {
-    borderRadius: 8,
-    marginTop: 8,
-    marginBottom: 24,
-  },
-  buttonContent: {
-    paddingVertical: 8,
-  },
-  loginContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+  footer: {
     alignItems: 'center',
+    marginTop: 30,
+  },
+  footerText: {
+    fontSize: 14,
+    color: '#666',
+  },
+  link: {
+    color: '#007bff',
+    fontWeight: '600',
   },
 });
