@@ -130,7 +130,15 @@
   - **CREATE**: apps/api/package.json with tRPC and Node.js dependencies
   - _Requirements: 2.1_
 
-- [ ] 7. Migrate Business Logic Services
+- [x] 7. Migrate Business Logic Services
+
+
+
+
+
+
+
+
 
   - **MOVE**: Service logic from temp-api/src/main/java/com/ecommerce/inventory/service/ → apps/api/src/services/
     ```powershell
