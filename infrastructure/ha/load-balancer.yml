@@ -1,0 +1,125 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-ha-config
+  namespace: production
+data:
+  nginx.conf: |
+    upstream api_backend {
+        least_conn;
+        server api-1:3000 max_fails=3 fail_timeout=30s;
+        server api-2:3000 max_fails=3 fail_timeout=30s;
+        server api-3:3000 max_fails=3 fail_timeout=30s backup;
+    }
+    
+    upstream web_backend {
+        least_conn;
+        server web-1:3000 max_fails=3 fail_timeout=30s;
+        server web-2:3000 max_fails=3 fail_timeout=30s;
+        server web-3:3000 max_fails=3 fail_timeout=30s backup;
+    }
+    
+    server {
+        listen 80;
+        listen 443 ssl http2;
+        server_name api.yourdomain.com;
+        
+        ssl_certificate /etc/ssl/certs/api.crt;
+        ssl_certificate_key /etc/ssl/private/api.key;
+        
+        location /health {
+            access_log off;
+            return 200 "healthy\n";
+            add_header Content-Type text/plain;
+        }
+        
+        location / {
+            proxy_pass http://api_backend;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            
+            proxy_connect_timeout 5s;
+            proxy_send_timeout 60s;
+            proxy_read_timeout 60s;
+            
+            proxy_next_upstream error timeout invalid_header http_500 http_502 http_503;
+            proxy_next_upstream_tries 3;
+        }
+    }
+    
+    server {
+        listen 80;
+        listen 443 ssl http2;
+        server_name app.yourdomain.com;
+        
+        ssl_certificate /etc/ssl/certs/app.crt;
+        ssl_certificate_key /etc/ssl/private/app.key;
+        
+        location / {
+            proxy_pass http://web_backend;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            
+            proxy_connect_timeout 5s;
+            proxy_send_timeout 60s;
+            proxy_read_timeout 60s;
+            
+            proxy_next_upstream error timeout invalid_header http_500 http_502 http_503;
+        }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-ha-lb
+  namespace: production
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx-ha-lb
+  template:
+    metadata:
+      labels:
+        app: nginx-ha-lb
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.25-alpine
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        - name: ssl-certs
+          mountPath: /etc/ssl/certs
+        - name: ssl-keys
+          mountPath: /etc/ssl/private
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: nginx-ha-config
+      - name: ssl-certs
+        secret:
+          secretName: ssl-certificates
+      - name: ssl-keys
+        secret:
+          secretName: ssl-private-keys

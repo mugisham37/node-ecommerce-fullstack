@@ -1,0 +1,315 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: failover-config
+  namespace: production
+data:
+  config.yaml: |
+    failover:
+      enabled: true
+      auto_approve: false
+      timeout_minutes: 30
+      
+      health_checks:
+        interval_seconds: 30
+        failure_threshold: 3
+        success_threshold: 2
+        
+      thresholds:
+        database:
+          max_connection_failures: 5
+          max_response_time_ms: 5000
+        api:
+          max_error_rate_percent: 10
+          max_response_time_ms: 3000
+        web:
+          max_error_rate_percent: 5
+          max_response_time_ms: 2000
+        redis:
+          max_connection_failures: 3
+          max_memory_usage_percent: 90
+          
+      sites:
+        dr-site-1:
+          priority: 1
+          location: "us-west-2"
+          endpoints:
+            database: "dr-db-1.example.com:5432"
+            api: "dr-api-1.example.com"
+            web: "dr-web-1.example.com"
+          capacity: 100
+          
+        dr-site-2:
+          priority: 2
+          location: "eu-west-1"
+          endpoints:
+            database: "dr-db-2.example.com:5432"
+            api: "dr-api-2.example.com"
+            web: "dr-web-2.example.com"
+          capacity: 80
+          
+        cloud-backup:
+          priority: 3
+          location: "multi-region"
+          endpoints:
+            database: "cloud-db.amazonaws.com:5432"
+            api: "cloud-api.amazonaws.com"
+            web: "cloud-web.amazonaws.com"
+          capacity: 50
+          
+      notifications:
+        slack:
+          webhook_url_secret: "slack-webhook"
+          channel: "#alerts"
+        pagerduty:
+          integration_key_secret: "pagerduty-key"
+        email:
+          smtp_server: "smtp.company.com"
+          from: "alerts@company.com"
+          to: ["ops@company.com", "oncall@company.com"]
+          
+      recovery:
+        auto_recovery: true
+        recovery_threshold_minutes: 10
+        max_recovery_attempts: 3
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: failover-controller
+  namespace: production
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: failover-controller
+  template:
+    metadata:
+      labels:
+        app: failover-controller
+    spec:
+      serviceAccountName: failover-controller
+      containers:
+      - name: controller
+        image: your-registry/failover-controller:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: CONFIG_PATH
+          value: "/etc/config/config.yaml"
+        - name: LOG_LEVEL
+          value: "INFO"
+        volumeMounts:
+        - name: config
+          mountPath: /etc/config
+        - name: scripts
+          mountPath: /scripts
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: config
+        configMap:
+          name: failover-config
+      - name: scripts
+        configMap:
+          name: failover-scripts
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: failover-controller
+  namespace: production
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: failover-controller
+rules:
+- apiGroups: [""]
+  resources: ["pods", "services", "endpoints", "secrets", "configmaps"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "statefulsets", "replicasets"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: ["networking.k8s.io"]
+  resources: ["ingresses"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: failover-controller
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: failover-controller
+subjects:
+- kind: ServiceAccount
+  name: failover-controller
+  namespace: production
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: failover-scripts
+  namespace: production
+data:
+  health-check.sh: |
+    #!/bin/bash
+    set -e
+    
+    # Database health check
+    check_database() {
+        local host=$1
+        local timeout=${2:-5}
+        
+        if timeout $timeout pg_isready -h $host; then
+            echo "Database $host is healthy"
+            return 0
+        else
+            echo "Database $host is unhealthy"
+            return 1
+        fi
+    }
+    
+    # API health check
+    check_api() {
+        local url=$1
+        local timeout=${2:-5}
+        
+        if curl -f -s --max-time $timeout "$url/health" > /dev/null; then
+            echo "API $url is healthy"
+            return 0
+        else
+            echo "API $url is unhealthy"
+            return 1
+        fi
+    }
+    
+    # Web health check
+    check_web() {
+        local url=$1
+        local timeout=${2:-5}
+        
+        if curl -f -s --max-time $timeout "$url" > /dev/null; then
+            echo "Web $url is healthy"
+            return 0
+        else
+            echo "Web $url is unhealthy"
+            return 1
+        fi
+    }
+    
+    # Redis health check
+    check_redis() {
+        local host=$1
+        local port=${2:-6379}
+        local timeout=${3:-5}
+        
+        if timeout $timeout redis-cli -h $host -p $port ping | grep -q PONG; then
+            echo "Redis $host:$port is healthy"
+            return 0
+        else
+            echo "Redis $host:$port is unhealthy"
+            return 1
+        fi
+    }
+    
+    # Main health check function
+    main() {
+        local component=$1
+        local endpoint=$2
+        
+        case $component in
+            "database")
+                check_database $endpoint
+                ;;
+            "api")
+                check_api $endpoint
+                ;;
+            "web")
+                check_web $endpoint
+                ;;
+            "redis")
+                check_redis $endpoint
+                ;;
+            *)
+                echo "Unknown component: $component"
+                exit 1
+                ;;
+        esac
+    }
+    
+    main "$@"
+    
+  failover.sh: |
+    #!/bin/bash
+    set -e
+    
+    COMPONENT=$1
+    TARGET_SITE=$2
+    DRY_RUN=${3:-false}
+    
+    echo "Starting failover: $COMPONENT to $TARGET_SITE (dry-run: $DRY_RUN)"
+    
+    # Load configuration
+    source /etc/config/config.yaml
+    
+    # Execute PowerShell failover script
+    pwsh /scripts/disaster-recovery/failover-automation.ps1 \
+        -FailoverType $COMPONENT \
+        -TargetSite $TARGET_SITE \
+        -AutoApprove \
+        $(if [ "$DRY_RUN" = "true" ]; then echo "-DryRun"; fi)
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: failover-controller
+  namespace: production
+spec:
+  selector:
+    app: failover-controller
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+  type: ClusterIP
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: failover-controller
+  namespace: production
+spec:
+  selector:
+    matchLabels:
+      app: failover-controller
+  endpoints:
+  - port: http
+    interval: 30s
+    path: /metrics

@@ -1,0 +1,97 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres-ha-cluster
+  namespace: production
+spec:
+  instances: 3
+  
+  postgresql:
+    parameters:
+      max_connections: "200"
+      shared_buffers: "256MB"
+      effective_cache_size: "1GB"
+      maintenance_work_mem: "64MB"
+      checkpoint_completion_target: "0.9"
+      wal_buffers: "16MB"
+      default_statistics_target: "100"
+      random_page_cost: "1.1"
+      effective_io_concurrency: "200"
+      work_mem: "4MB"
+      min_wal_size: "1GB"
+      max_wal_size: "4GB"
+      max_worker_processes: "8"
+      max_parallel_workers_per_gather: "4"
+      max_parallel_workers: "8"
+      max_parallel_maintenance_workers: "4"
+      
+  bootstrap:
+    initdb:
+      database: inventory_system
+      owner: app_user
+      secret:
+        name: postgres-credentials
+      
+  storage:
+    size: 100Gi
+    storageClass: fast-ssd
+    
+  monitoring:
+    enabled: true
+    
+  backup:
+    retentionPolicy: "30d"
+    barmanObjectStore:
+      destinationPath: "s3://backup-bucket/postgres"
+      s3Credentials:
+        accessKeyId:
+          name: backup-s3-credentials
+          key: ACCESS_KEY_ID
+        secretAccessKey:
+          name: backup-s3-credentials
+          key: SECRET_ACCESS_KEY
+      wal:
+        retention: "7d"
+      data:
+        retention: "30d"
+        
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "500m"
+    limits:
+      memory: "2Gi"
+      cpu: "1000m"
+      
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: cnpg.io/cluster
+            operator: In
+            values:
+            - postgres-ha-cluster
+        topologyKey: kubernetes.io/hostname
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-credentials
+  namespace: production
+type: Opaque
+data:
+  username: YXBwX3VzZXI=  # app_user
+  password: <base64-encoded-password>
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: backup-s3-credentials
+  namespace: production
+type: Opaque
+data:
+  ACCESS_KEY_ID: <base64-encoded-access-key>
+  SECRET_ACCESS_KEY: <base64-encoded-secret-key>
