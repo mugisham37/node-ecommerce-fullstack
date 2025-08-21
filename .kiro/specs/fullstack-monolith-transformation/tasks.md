@@ -487,7 +487,7 @@
   - **CREATE**: apps/mobile/src/hooks/useInventory.ts (mobile-specific)
   - _Requirements: 5.3, 5.7_
 
-- [ ] 27. Develop Mobile Order Management System
+- [x] 27. Develop Mobile Order Management System
 
   - **CREATE**: apps/mobile/src/screens/orders/OrderListScreen.tsx
   - **CREATE**: apps/mobile/src/screens/orders/OrderDetailScreen.tsx
