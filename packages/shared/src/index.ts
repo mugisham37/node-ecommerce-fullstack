@@ -3,15 +3,5 @@
  * Provides all shared utilities, errors, components, and services
  */
 
-// Export all error classes
-export * from './errors';
-
-// Export all components
-export * from './components';
-
-// Export all services
-export * from './services';
-
-// Export types and utilities
+// Export types (minimal for now)
 export * from './types';
-export * from './utils';

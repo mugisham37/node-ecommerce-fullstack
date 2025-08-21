@@ -27,10 +27,9 @@
       "@/cache/*": ["./packages/cache/src/*"],
       "@/config/*": ["./packages/config/src/*"],
       "@/api-client/*": ["./packages/api-client/src/*"],
-      "@/validation/*": ["./packages/validation/src/*"],
-      "~/*": ["./apps/*/src/*"]
+      "@/validation/*": ["./packages/validation/src/*"]
     },
-    "types": ["node", "jest"],
+    "types": ["node"],
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
     "declarationMap": true,
