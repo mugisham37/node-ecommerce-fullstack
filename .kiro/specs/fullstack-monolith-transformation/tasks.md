@@ -161,6 +161,7 @@
 
 
 
+
   - **MOVE**: Security configuration from temp-api/src/main/java/com/ecommerce/inventory/security/ → apps/api/src/auth/
     ```powershell
     New-Item -ItemType Directory -Path "apps/api/src/auth"
@@ -174,7 +175,12 @@
   - **CREATE**: Session management in apps/api/src/auth/SessionService.ts
   - _Requirements: 2.4_
 
-- [ ] 9. Convert Event-Driven Architecture
+- [x] 9. Convert Event-Driven Architecture
+
+
+
+
+
   - **MOVE**: Event classes from temp-api/src/main/java/com/ecommerce/inventory/event/ → apps/api/src/events/
     ```powershell
     New-Item -ItemType Directory -Path "apps/api/src/events/types", "apps/api/src/events/handlers", "apps/api/src/events/publishers"
