@@ -1,0 +1,25 @@
+{
+  "name": "@monorepo/performance-tools",
+  "version": "1.0.0",
+  "description": "Performance monitoring and optimization tools",
+  "main": "monitoring.js",
+  "scripts": {
+    "start": "node monitoring.js",
+    "monitor": "node monitoring.js",
+    "analyze": "node bundle-analyzer.js",
+    "benchmark": "node benchmark.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "prom-client": "^15.1.0",
+    "pidusage": "^3.0.2",
+    "webpack-bundle-analyzer": "^4.9.1",
+    "autocannon": "^7.12.0",
+    "clinic": "^12.1.0",
+    "0x": "^5.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0"
+  }
+}
