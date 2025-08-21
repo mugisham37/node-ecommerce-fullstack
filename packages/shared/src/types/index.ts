@@ -86,3 +86,108 @@ export type FileType =
 
 // Environment types
 export type Environment = 'development' | 'staging' | 'production';
+
+// Stock movement types
+export enum StockMovementType {
+  PURCHASE = 'PURCHASE',
+  SALE = 'SALE',
+  ADJUSTMENT_INCREASE = 'ADJUSTMENT_INCREASE',
+  ADJUSTMENT_DECREASE = 'ADJUSTMENT_DECREASE',
+  TRANSFER_IN = 'TRANSFER_IN',
+  TRANSFER_OUT = 'TRANSFER_OUT',
+  RETURN = 'RETURN',
+  DAMAGE = 'DAMAGE',
+  EXPIRED = 'EXPIRED',
+  LOST = 'LOST'
+}
+
+// Product interface
+export interface Product extends BaseEntity {
+  name: string;
+  description?: string;
+  sku: string;
+  price: number;
+  categoryId: string;
+  supplierId: string;
+  category?: Category;
+  supplier?: Supplier;
+  inventory?: Inventory;
+}
+
+// Category interface
+export interface Category extends BaseEntity {
+  name: string;
+  description?: string;
+  parentId?: string;
+  parent?: Category;
+  children?: Category[];
+}
+
+// Supplier interface
+export interface Supplier extends BaseEntity {
+  name: string;
+  contactPerson: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  country: string;
+  postalCode: string;
+}
+
+// Inventory interface
+export interface Inventory extends BaseEntity {
+  productId: string;
+  quantity: number;
+  reservedQuantity: number;
+  reorderLevel: number;
+  maxStockLevel: number;
+  lastRestocked?: Date;
+  product?: Product;
+}
+
+// Stock movement interface
+export interface StockMovement extends BaseEntity {
+  productId: string;
+  type: StockMovementType;
+  quantity: number;
+  reason: string;
+  referenceId?: string;
+  userId: string;
+  product?: Product;
+  user?: User;
+}
+
+// Order interface
+export interface Order extends BaseEntity {
+  orderNumber: string;
+  customerId?: string;
+  supplierId?: string;
+  status: OrderStatus;
+  totalAmount: number;
+  items: OrderItem[];
+  customer?: Customer;
+  supplier?: Supplier;
+}
+
+// Order item interface
+export interface OrderItem extends BaseEntity {
+  orderId: string;
+  productId: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+  product?: Product;
+}
+
+// Customer interface
+export interface Customer extends BaseEntity {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  country?: string;
+  postalCode?: string;
+}

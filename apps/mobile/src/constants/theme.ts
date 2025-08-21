@@ -95,8 +95,32 @@ export const darkTheme = {
   },
 };
 
-// Default theme (light)
-export const theme = lightTheme;
+// Extended theme with additional properties
+const extendedColors = {
+  ...colors,
+  // Additional colors for mobile inventory interface
+  text: colors.onSurface,
+  textSecondary: colors.onSurfaceVariant,
+  border: colors.outline,
+  disabled: colors.outlineVariant,
+  white: '#FFFFFF',
+  success: '#10B981',
+  warning: '#F59E0B',
+  info: '#3B82F6',
+  successContainer: '#D1FAE5',
+  warningContainer: '#FEF3C7',
+  infoContainer: '#DBEAFE',
+};
+
+// Default theme (light) with extensions
+export const theme = {
+  ...lightTheme,
+  colors: extendedColors,
+  spacing,
+  borderRadius,
+  typography,
+  shadows,
+};
 
 // Typography
 export const typography = {

@@ -1,100 +1,223 @@
-import React, {useState} from 'react';
-import {View, StyleSheet, FlatList} from 'react-native';
-import {Text, Card, Searchbar, FAB, Chip} from 'react-native-paper';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {NavigationProps} from '@/navigation/AppNavigator';
-import {theme} from '@/constants/theme';
+import React, { useState, useCallback, useMemo } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  RefreshControl,
+  Alert,
+  TouchableOpacity,
+  TextInput,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import Toast from 'react-native-toast-message';
 
-// Mock data
-const mockProducts = [
-  {
-    id: '1',
-    name: 'Wireless Headphones',
-    sku: 'WH-001',
-    stock: 45,
-    price: 99.99,
-    category: 'Electronics',
-    lowStock: false,
-  },
-  {
-    id: '2',
-    name: 'Coffee Mug',
-    sku: 'CM-002',
-    stock: 5,
-    price: 12.99,
-    category: 'Kitchen',
-    lowStock: true,
-  },
-  // Add more mock data as needed
-];
+import { useInventory } from '../../hooks/useInventory';
+import { InventoryCard } from '../../components/inventory/InventoryCard';
+import { LoadingSpinner } from '../../components/common/LoadingSpinner';
+import { EmptyState } from '../../components/common/EmptyState';
+import { FilterModal } from '../../components/modals/FilterModal';
+import { theme } from '../../constants/theme';
+import type { Inventory, InventoryFiltersDTO } from '@ecommerce/shared/types';
 
-export const InventoryListScreen: React.FC<NavigationProps> = ({navigation}) => {
+const InventoryListScreen: React.FC = () => {
+  const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('');
-  const [products] = useState(mockProducts);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState<InventoryFiltersDTO>({});
 
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.sku.toLowerCase().includes(searchQuery.toLowerCase())
+  const {
+    inventoryItems,
+    isLoading,
+    isRefreshing,
+    error,
+    refetch,
+    loadMore,
+    hasNextPage,
+    isLoadingMore,
+  } = useInventory({
+    search: searchQuery,
+    filters,
+  });
+
+  const handleRefresh = useCallback(() => {
+    refetch();
+  }, [refetch]);
+
+  const handleLoadMore = useCallback(() => {
+    if (hasNextPage && !isLoadingMore) {
+      loadMore();
+    }
+  }, [hasNextPage, isLoadingMore, loadMore]);
+
+  const handleSearch = useCallback((query: string) => {
+    setSearchQuery(query);
+  }, []);
+
+  const handleApplyFilters = useCallback((newFilters: InventoryFiltersDTO) => {
+    setFilters(newFilters);
+    setShowFilters(false);
+  }, []);
+
+  const handleClearFilters = useCallback(() => {
+    setFilters({});
+    setShowFilters(false);
+  }, []);
+
+  const handleItemPress = useCallback((item: Inventory) => {
+    navigation.navigate('ProductDetail', { productId: item.productId });
+  }, [navigation]);
+
+  const handleStockAdjustment = useCallback((item: Inventory) => {
+    navigation.navigate('StockAdjustment', { 
+      productId: item.productId,
+      currentQuantity: item.quantity 
+    });
+  }, [navigation]);
+
+  const handleScanBarcode = useCallback(() => {
+    navigation.navigate('BarcodeScanner', { 
+      mode: 'inventory',
+      onScanComplete: (productId: string) => {
+        navigation.navigate('ProductDetail', { productId });
+      }
+    });
+  }, [navigation]);
+
+  const filteredItems = useMemo(() => {
+    if (!inventoryItems) return [];
+    
+    let filtered = [...inventoryItems];
+    
+    if (filters.lowStock) {
+      filtered = filtered.filter(item => item.quantity <= item.reorderLevel);
+    }
+    
+    return filtered;
+  }, [inventoryItems, filters]);
+
+  const renderInventoryItem = useCallback(({ item }: { item: Inventory }) => (
+    <InventoryCard
+      item={item}
+      onPress={() => handleItemPress(item)}
+      onStockAdjustment={() => handleStockAdjustment(item)}
+    />
+  ), [handleItemPress, handleStockAdjustment]);
+
+  const renderHeader = () => (
+    <View style={styles.header}>
+      <View style={styles.searchContainer}>
+        <Icon name="search" size={20} color={theme.colors.textSecondary} style={styles.searchIcon} />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search products..."
+          value={searchQuery}
+          onChangeText={handleSearch}
+          placeholderTextColor={theme.colors.textSecondary}
+        />
+        <TouchableOpacity
+          style={styles.filterButton}
+          onPress={() => setShowFilters(true)}
+        >
+          <Icon 
+            name="filter-list" 
+            size={20} 
+            color={Object.keys(filters).length > 0 ? theme.colors.primary : theme.colors.textSecondary} 
+          />
+        </TouchableOpacity>
+      </View>
+      
+      <View style={styles.actionButtons}>
+        <TouchableOpacity
+          style={styles.scanButton}
+          onPress={handleScanBarcode}
+        >
+          <Icon name="qr-code-scanner" size={20} color={theme.colors.white} />
+          <Text style={styles.scanButtonText}>Scan</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => navigation.navigate('AddProduct')}
+        >
+          <Icon name="add" size={20} color={theme.colors.white} />
+          <Text style={styles.addButtonText}>Add</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 
-  const renderProduct = ({item}: {item: typeof mockProducts[0]}) => (
-    <Card
-      style={styles.productCard}
-      onPress={() => navigation.navigate('ProductDetail', {productId: item.id})}>
-      <Card.Content>
-        <View style={styles.productHeader}>
-          <Text variant="titleMedium" style={styles.productName}>
-            {item.name}
-          </Text>
-          {item.lowStock && (
-            <Chip mode="flat" style={styles.lowStockChip}>
-              Low Stock
-            </Chip>
-          )}
+  const renderFooter = () => {
+    if (!isLoadingMore) return null;
+    return (
+      <View style={styles.footerLoader}>
+        <LoadingSpinner size="small" />
+      </View>
+    );
+  };
+
+  if (isLoading && !inventoryItems?.length) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <LoadingSpinner />
+      </SafeAreaView>
+    );
+  }
+
+  if (error) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.errorContainer}>
+          <Icon name="error-outline" size={48} color={theme.colors.error} />
+          <Text style={styles.errorTitle}>Something went wrong</Text>
+          <Text style={styles.errorMessage}>{error.message}</Text>
+          <TouchableOpacity style={styles.retryButton} onPress={handleRefresh}>
+            <Text style={styles.retryButtonText}>Try Again</Text>
+          </TouchableOpacity>
         </View>
-        
-        <Text variant="bodyMedium" style={styles.productSku}>
-          SKU: {item.sku}
-        </Text>
-        
-        <View style={styles.productDetails}>
-          <Text variant="bodyMedium">Stock: {item.stock}</Text>
-          <Text variant="bodyMedium" style={styles.price}>
-            ${item.price}
-          </Text>
-        </View>
-        
-        <Text variant="bodySmall" style={styles.category}>
-          {item.category}
-        </Text>
-      </Card.Content>
-    </Card>
-  );
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <Searchbar
-          placeholder="Search products..."
-          onChangeText={setSearchQuery}
-          value={searchQuery}
-          style={styles.searchbar}
-        />
+      <FlatList
+        data={filteredItems}
+        renderItem={renderInventoryItem}
+        keyExtractor={(item) => item.id}
+        ListHeaderComponent={renderHeader}
+        ListFooterComponent={renderFooter}
+        ListEmptyComponent={
+          <EmptyState
+            icon="inventory"
+            title="No inventory items"
+            message="Start by adding products to your inventory"
+            actionText="Add Product"
+            onAction={() => navigation.navigate('AddProduct')}
+          />
+        }
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={handleRefresh}
+            colors={[theme.colors.primary]}
+          />
+        }
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.1}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.listContent}
+      />
 
-        <FlatList
-          data={filteredProducts}
-          renderItem={renderProduct}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.listContent}
-          showsVerticalScrollIndicator={false}
-        />
-
-        <FAB
-          icon="plus"
-          style={styles.fab}
-          onPress={() => navigation.navigate('AddProduct')}
-        />
-      </View>
+      <FilterModal
+        visible={showFilters}
+        filters={filters}
+        onApply={handleApplyFilters}
+        onClear={handleClearFilters}
+        onClose={() => setShowFilters(false)}
+      />
     </SafeAreaView>
   );
 };
@@ -104,52 +227,107 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.colors.background,
   },
-  content: {
-    flex: 1,
-    padding: 16,
+  header: {
+    padding: theme.spacing.md,
+    backgroundColor: theme.colors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.border,
   },
-  searchbar: {
-    marginBottom: 16,
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: theme.colors.background,
+    borderRadius: theme.borderRadius.md,
+    paddingHorizontal: theme.spacing.sm,
+    marginBottom: theme.spacing.md,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+  },
+  searchIcon: {
+    marginRight: theme.spacing.sm,
+  },
+  searchInput: {
+    flex: 1,
+    height: 44,
+    fontSize: 16,
+    color: theme.colors.text,
+  },
+  filterButton: {
+    padding: theme.spacing.sm,
+  },
+  actionButtons: {
+    flexDirection: 'row',
+    gap: theme.spacing.sm,
+  },
+  scanButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: theme.colors.secondary,
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
+    borderRadius: theme.borderRadius.md,
+    gap: theme.spacing.xs,
+  },
+  scanButtonText: {
+    color: theme.colors.white,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  addButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: theme.colors.primary,
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
+    borderRadius: theme.borderRadius.md,
+    gap: theme.spacing.xs,
+  },
+  addButtonText: {
+    color: theme.colors.white,
+    fontSize: 16,
+    fontWeight: '600',
   },
   listContent: {
-    paddingBottom: 80,
+    flexGrow: 1,
   },
-  productCard: {
-    marginBottom: 12,
-  },
-  productHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  footerLoader: {
+    padding: theme.spacing.md,
     alignItems: 'center',
-    marginBottom: 8,
   },
-  productName: {
+  errorContainer: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: theme.spacing.xl,
+  },
+  errorTitle: {
+    fontSize: 20,
     fontWeight: 'bold',
+    color: theme.colors.text,
+    marginTop: theme.spacing.md,
+    marginBottom: theme.spacing.sm,
   },
-  lowStockChip: {
-    backgroundColor: theme.colors.errorContainer,
+  errorMessage: {
+    fontSize: 16,
+    color: theme.colors.textSecondary,
+    textAlign: 'center',
+    marginBottom: theme.spacing.lg,
   },
-  productSku: {
-    color: theme.colors.onSurfaceVariant,
-    marginBottom: 8,
+  retryButton: {
+    backgroundColor: theme.colors.primary,
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.sm,
+    borderRadius: theme.borderRadius.md,
   },
-  productDetails: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 4,
-  },
-  price: {
-    fontWeight: 'bold',
-    color: theme.colors.primary,
-  },
-  category: {
-    color: theme.colors.onSurfaceVariant,
-  },
-  fab: {
-    position: 'absolute',
-    margin: 16,
-    right: 0,
-    bottom: 0,
+  retryButtonText: {
+    color: theme.colors.white,
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
+
+export default InventoryListScreen;
