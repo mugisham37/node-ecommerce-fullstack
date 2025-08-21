@@ -233,7 +233,12 @@
   - **CREATE**: Job monitoring in apps/api/src/jobs/monitoring/
   - _Requirements: 2.9_
 
-- [ ] 12. Implement Monitoring and Health Checks
+- [x] 12. Implement Monitoring and Health Checks
+
+
+
+
+
   - **MOVE**: Health check logic from temp-api/src/main/java/com/ecommerce/inventory/health/ → apps/api/src/monitoring/
     ```powershell
     New-Item -ItemType Directory -Path "apps/api/src/monitoring/health", "apps/api/src/monitoring/metrics"
