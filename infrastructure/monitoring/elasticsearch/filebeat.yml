@@ -1,0 +1,71 @@
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /var/log/apps/api/*.log
+  fields:
+    service: api
+  fields_under_root: true
+  multiline.pattern: '^\d{4}-\d{2}-\d{2}'
+  multiline.negate: true
+  multiline.match: after
+
+- type: log
+  enabled: true
+  paths:
+    - /var/log/apps/web/*.log
+  fields:
+    service: web
+  fields_under_root: true
+
+- type: log
+  enabled: true
+  paths:
+    - /var/log/postgresql/*.log
+  fields:
+    service: postgres
+  fields_under_root: true
+
+- type: log
+  enabled: true
+  paths:
+    - /var/log/redis/*.log
+  fields:
+    service: redis
+  fields_under_root: true
+
+- type: docker
+  containers.ids:
+    - "*"
+  processors:
+    - add_docker_metadata:
+        host: "unix:///var/run/docker.sock"
+
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
+setup.template.settings:
+  index.number_of_shards: 1
+  index.codec: best_compression
+
+setup.kibana:
+  host: "kibana:5601"
+
+output.logstash:
+  hosts: ["logstash:5044"]
+
+processors:
+  - add_host_metadata:
+      when.not.contains.tags: forwarded
+  - add_cloud_metadata: ~
+  - add_docker_metadata: ~
+  - add_kubernetes_metadata: ~
+
+logging.level: info
+logging.to_files: true
+logging.files:
+  path: /var/log/filebeat
+  name: filebeat
+  keepfiles: 7
+  permissions: 0644
