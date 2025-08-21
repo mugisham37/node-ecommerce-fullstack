@@ -1,0 +1,44 @@
+# Global code owners
+* @dev-team
+
+# Infrastructure and CI/CD
+/.github/ @devops-team @senior-dev
+/infrastructure/ @devops-team @senior-dev
+/docker-compose*.yml @devops-team
+/Dockerfile @devops-team
+
+# Database and migrations
+/packages/database/ @backend-team @senior-dev
+/temp-api/src/main/resources/db/migration/ @backend-team
+
+# Security and configuration
+/config/ @devops-team @security-team
+/.env* @devops-team @security-team
+/security/ @security-team
+
+# API and backend services
+/apps/api/ @backend-team
+/packages/cache/ @backend-team
+/packages/validation/ @backend-team
+
+# Frontend applications
+/apps/web/ @frontend-team
+/apps/mobile/ @mobile-team
+/packages/ui/ @frontend-team
+
+# Shared packages
+/packages/shared/ @dev-team
+/packages/config/ @devops-team
+/packages/constants/ @dev-team
+
+# Documentation
+/docs/ @dev-team
+/README.md @dev-team
+/*.md @dev-team
+
+# Scripts and tools
+/scripts/ @devops-team
+/tools/ @devops-team
+
+# Testing
+/tests/ @qa-team @dev-team

@@ -1,0 +1,109 @@
+name: Cleanup
+
+on:
+  schedule:
+    - cron: '0 3 * * 0' # Weekly on Sunday at 3 AM UTC
+  workflow_dispatch:
+
+jobs:
+  cleanup-artifacts:
+    name: Cleanup Old Artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cleanup old artifacts
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const artifacts = await github.rest.actions.listArtifactsForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100
+            });
+            
+            const cutoffDate = new Date();
+            cutoffDate.setDate(cutoffDate.getDate() - 30); // Keep artifacts for 30 days
+            
+            for (const artifact of artifacts.data.artifacts) {
+              const createdAt = new Date(artifact.created_at);
+              if (createdAt < cutoffDate) {
+                console.log(`Deleting artifact: ${artifact.name} (${artifact.created_at})`);
+                await github.rest.actions.deleteArtifact({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  artifact_id: artifact.id
+                });
+              }
+            }
+
+  cleanup-packages:
+    name: Cleanup Old Container Images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cleanup old container images
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const packages = await github.rest.packages.listPackagesForOrganization({
+              org: context.repo.owner,
+              package_type: 'container'
+            });
+            
+            for (const pkg of packages.data) {
+              if (pkg.name.includes(context.repo.repo)) {
+                const versions = await github.rest.packages.getAllPackageVersionsForPackageOwnedByOrg({
+                  org: context.repo.owner,
+                  package_type: 'container',
+                  package_name: pkg.name
+                });
+                
+                // Keep the latest 10 versions, delete older ones
+                const versionsToDelete = versions.data.slice(10);
+                
+                for (const version of versionsToDelete) {
+                  console.log(`Deleting package version: ${pkg.name}:${version.name}`);
+                  await github.rest.packages.deletePackageVersionForOrg({
+                    org: context.repo.owner,
+                    package_type: 'container',
+                    package_name: pkg.name,
+                    package_version_id: version.id
+                  });
+                }
+              }
+            }
+
+  cleanup-workflow-runs:
+    name: Cleanup Old Workflow Runs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cleanup old workflow runs
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const workflows = await github.rest.actions.listRepoWorkflows({
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+            
+            const cutoffDate = new Date();
+            cutoffDate.setDate(cutoffDate.getDate() - 90); // Keep runs for 90 days
+            
+            for (const workflow of workflows.data.workflows) {
+              const runs = await github.rest.actions.listWorkflowRuns({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: workflow.id,
+                per_page: 100
+              });
+              
+              for (const run of runs.data.workflow_runs) {
+                const createdAt = new Date(run.created_at);
+                if (createdAt < cutoffDate && run.status === 'completed') {
+                  console.log(`Deleting workflow run: ${workflow.name} - ${run.id} (${run.created_at})`);
+                  await github.rest.actions.deleteWorkflowRun({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    run_id: run.id
+                  });
+                }
+              }
+            }
