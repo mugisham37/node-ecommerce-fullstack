@@ -28,8 +28,8 @@ export const stagingDefaults: Partial<StagingConfig> = {
   
   // Security
   CORS_ORIGIN: ['https://staging.ecommerce.com', 'https://admin-staging.ecommerce.com'],
-  RATE_LIMIT_WINDOW: 900000, // 15 minutes
-  RATE_LIMIT_MAX: 200,
+  RATE_LIMIT_WINDOW_MS: 900000, // 15 minutes
+  RATE_LIMIT_MAX_REQUESTS: 200,
   
   // Monitoring
   ENABLE_METRICS: true,

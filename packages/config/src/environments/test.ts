@@ -49,8 +49,8 @@ export const testDefaults: Partial<TestConfig> = {
   
   // Security
   CORS_ORIGIN: '*',
-  RATE_LIMIT_WINDOW: 900000,
-  RATE_LIMIT_MAX: 10000, // High limit for tests
+  RATE_LIMIT_WINDOW_MS: 900000,
+  RATE_LIMIT_MAX_REQUESTS: 10000, // High limit for tests
   
   // Monitoring
   ENABLE_METRICS: false,

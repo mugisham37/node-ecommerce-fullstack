@@ -39,11 +39,11 @@ if (error) {
 export const appConfig: BaseConfig = config;
 
 // Export environment-specific configurations
-export { BaseConfig } from './environments/base';
-export { DevelopmentConfig } from './environments/development';
-export { StagingConfig } from './environments/staging';
-export { ProductionConfig } from './environments/production';
-export { TestConfig } from './environments/test';
+export type { BaseConfig } from './environments/base';
+export type { DevelopmentConfig } from './environments/development';
+export type { StagingConfig } from './environments/staging';
+export type { ProductionConfig } from './environments/production';
+export type { TestConfig } from './environments/test';
 
 // Utility functions
 export const isDevelopment = () => appConfig.NODE_ENV === 'development';
@@ -117,8 +117,8 @@ export const getCORSConfig = () => ({
 
 // Rate limiting configuration helper
 export const getRateLimitConfig = () => ({
-  windowMs: appConfig.RATE_LIMIT_WINDOW,
-  max: appConfig.RATE_LIMIT_MAX,
+  windowMs: appConfig.RATE_LIMIT_WINDOW_MS,
+  max: appConfig.RATE_LIMIT_MAX_REQUESTS,
 });
 
 // Export all environments

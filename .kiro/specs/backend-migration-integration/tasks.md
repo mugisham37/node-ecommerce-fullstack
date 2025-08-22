@@ -69,7 +69,10 @@
   - Clean up: Delete copied validator files from other-backend after successful conversion
   - _Requirements: 1.2_
 
-- [-] 1.4 Configuration and Environment Setup
+- [x] 1.4 Configuration and Environment Setup
+
+
+
 
 
   - Copy other-backend/src/config/cors.ts to apps/api/src/config/cors.ts

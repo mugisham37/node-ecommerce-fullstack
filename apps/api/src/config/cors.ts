@@ -5,8 +5,11 @@ const corsOptions: CorsOptions = {
     const allowedOrigins = [
       'http://localhost:3000',
       'http://localhost:3001',
+      'http://localhost:19006', // React Native development
       process.env.CLIENT_URL,
-      process.env.ADMIN_URL
+      process.env.ADMIN_URL,
+      process.env.NEXT_PUBLIC_API_URL,
+      ...(process.env.ALLOWED_ORIGINS?.split(',') || [])
     ].filter(Boolean);
 
     if (!origin || allowedOrigins.includes(origin)) {
@@ -22,9 +25,11 @@ const corsOptions: CorsOptions = {
     'Authorization', 
     'X-Requested-With',
     'Accept',
-    'Origin'
+    'Origin',
+    'X-Request-ID',
+    'X-Language'
   ],
-  exposedHeaders: ['X-Total-Count'],
+  exposedHeaders: ['X-Total-Count', 'X-Request-ID'],
   maxAge: 86400, // 24 hours
 };
 

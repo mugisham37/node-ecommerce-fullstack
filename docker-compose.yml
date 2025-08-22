@@ -27,14 +27,18 @@ services:
   redis:
     image: redis:7-alpine
     container_name: ecommerce-redis-dev
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-}
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
+      - ./infrastructure/redis/redis.conf:/usr/local/etc/redis/redis.conf
     networks:
       - ecommerce-network
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -51,7 +55,17 @@ services:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/ecommerce_inventory_dev
       REDIS_URL: redis://redis:6379
       JWT_SECRET: dev-jwt-secret-key
+      JWT_REFRESH_SECRET: dev-refresh-secret-key
       PORT: 4000
+      CLIENT_URL: http://localhost:3000
+      ADMIN_URL: http://localhost:3001
+      ALLOWED_ORIGINS: http://localhost:3000,http://localhost:3001,http://localhost:19006
+      SMTP_HOST: mailhog
+      SMTP_PORT: 1025
+      ENABLE_SWAGGER: true
+      LOG_LEVEL: debug
+      DEFAULT_LANGUAGE: en
+      SUPPORTED_LANGUAGES: en,es,fr,de,zh
     ports:
       - "4000:4000"
     depends_on:
@@ -59,12 +73,15 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      mailhog:
+        condition: service_started
     networks:
       - ecommerce-network
     volumes:
       - ./apps/api:/app/apps/api
       - ./packages:/app/packages
       - /app/node_modules
+      - ./uploads:/app/uploads
     restart: unless-stopped
 
   # Web Application
@@ -132,9 +149,57 @@ services:
     environment:
       REDIS_HOSTS: local:redis:6379
     ports:
-      - "8081:8081"
+      - "8082:8081"
     depends_on:
       - redis
+    networks:
+      - ecommerce-network
+    restart: unless-stopped
+
+  # MailHog for email testing
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: ecommerce-mailhog-dev
+    ports:
+      - "1025:1025"  # SMTP server
+      - "8025:8025"  # Web UI
+    networks:
+      - ecommerce-network
+    restart: unless-stopped
+
+  # Elasticsearch for advanced search (optional)
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: ecommerce-elasticsearch-dev
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - ecommerce-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Kibana for Elasticsearch management (optional)
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    container_name: ecommerce-kibana-dev
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
     networks:
       - ecommerce-network
     restart: unless-stopped
@@ -143,6 +208,8 @@ volumes:
   postgres_data:
     driver: local
   redis_data:
+    driver: local
+  elasticsearch_data:
     driver: local
 
 networks:
