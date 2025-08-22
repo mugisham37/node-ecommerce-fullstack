@@ -1,0 +1,76 @@
+{
+  "welcome": {
+    "subject": "¡Bienvenido a {{storeName}}!",
+    "greeting": "Hola {{firstName}},",
+    "message": "Gracias por crear una cuenta con nosotros. ¡Estamos emocionados de tenerte como cliente!",
+    "benefits": "Con tu nueva cuenta, puedes:",
+    "benefit1": "Rastrear tus pedidos",
+    "benefit2": "Ver tu historial de pedidos",
+    "benefit3": "Actualizar tu información de perfil",
+    "benefit4": "Guardar tus productos favoritos",
+    "support": "Si tienes alguna pregunta o necesitas ayuda, no dudes en contactar a nuestro equipo de atención al cliente.",
+    "cta": "Visitar Nuestra Tienda"
+  },
+  "orderConfirmation": {
+    "subject": "Confirmación de Pedido #{{orderId}}",
+    "greeting": "¡Gracias por tu pedido, {{firstName}}!",
+    "message": "Tu pedido ha sido recibido y está siendo procesado. Aquí tienes un resumen de tu compra:",
+    "orderDetails": "Detalles del Pedido",
+    "orderNumber": "Número de Pedido:",
+    "orderDate": "Fecha del Pedido:",
+    "itemsOrdered": "Artículos Pedidos",
+    "product": "Producto",
+    "quantity": "Cant.",
+    "price": "Precio",
+    "total": "Total",
+    "subtotal": "Subtotal:",
+    "tax": "Impuestos:",
+    "shipping": "Envío:",
+    "totalAmount": "Total:",
+    "shippingAddress": "Dirección de Envío",
+    "trackingMessage": "Recibirás otro correo cuando tu pedido sea enviado. También puedes verificar el estado de tu pedido haciendo clic en el botón de abajo.",
+    "cta": "Ver Pedido"
+  },
+  "orderShipped": {
+    "subject": "¡Tu Pedido #{{orderId}} Ha Sido Enviado!",
+    "greeting": "Hola {{firstName}},",
+    "message": "¡Buenas noticias! Tu pedido #{{orderId}} está en camino hacia ti.",
+    "trackingInfo": "Información de Seguimiento",
+    "trackingNumber": "Número de Seguimiento:",
+    "estimatedDelivery": "Entrega Estimada:",
+    "trackingMessage": "Puedes rastrear tu paquete haciendo clic en el botón de abajo:",
+    "trackCta": "Rastrear Paquete",
+    "support": "Si tienes alguna pregunta sobre tu pedido, no dudes en contactar a nuestro equipo de atención al cliente.",
+    "cta": "Ver Detalles del Pedido"
+  },
+  "orderDelivered": {
+    "subject": "¡Tu Pedido #{{orderId}} Ha Sido Entregado!",
+    "greeting": "Hola {{firstName}},",
+    "message": "¡Tu pedido #{{orderId}} ha sido entregado! Esperamos que disfrutes tu compra.",
+    "support": "Si tienes algún problema con tu pedido, por favor contacta a nuestro equipo de atención al cliente de inmediato.",
+    "feedback": "¿Cómo fue tu experiencia?",
+    "feedbackMessage": "¡Nos encantaría conocer tu opinión! Por favor tómate un momento para compartir tus comentarios sobre tu compra.",
+    "reviewCta": "Escribir una Reseña",
+    "orderCta": "Ver Pedido",
+    "thanks": "¡Gracias por comprar con nosotros!"
+  },
+  "passwordReset": {
+    "subject": "Solicitud de Restablecimiento de Contraseña",
+    "greeting": "Hola {{firstName}},",
+    "message": "Recibimos una solicitud para restablecer tu contraseña. Si no hiciste esta solicitud, puedes ignorar este correo de forma segura.",
+    "instruction": "Para restablecer tu contraseña, haz clic en el botón de abajo. Este enlace expirará en {{expiryTime}}.",
+    "cta": "Restablecer Contraseña",
+    "warning": "Aviso de Seguridad: Si no solicitaste un restablecimiento de contraseña, por favor contacta a nuestro equipo de soporte inmediatamente ya que tu cuenta podría estar en riesgo.",
+    "alternative": "Si el botón de arriba no funciona, puedes copiar y pegar el siguiente enlace en tu navegador:"
+  },
+  "reviewRequest": {
+    "subject": "Comparte tu Opinión sobre tu Compra Reciente",
+    "greeting": "Hola {{firstName}},",
+    "message": "¡Gracias por tu compra reciente! Esperamos que estés disfrutando tus nuevos artículos.",
+    "feedback": "Tu opinión es increíblemente valiosa para nosotros y ayuda a otros clientes a tomar decisiones informadas. ¿Te importaría tomarte un momento para compartir tus pensamientos?",
+    "recentPurchase": "Tu Compra Reciente (Pedido #{{orderId}})",
+    "reviewCta": "Escribir una Reseña",
+    "orderCta": "Ver Pedido",
+    "thanks": "¡Gracias por ser un cliente valioso!"
+  }
+}

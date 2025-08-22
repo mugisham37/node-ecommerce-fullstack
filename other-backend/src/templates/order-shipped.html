@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Order Has Shipped - {{storeName}}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #007bff;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        .title {
+            color: #28a745;
+            font-size: 28px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .greeting {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .order-info {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #007bff;
+        }
+        .order-info h3 {
+            color: #007bff;
+            margin-top: 0;
+        }
+        .tracking-section {
+            background-color: #e8f5e8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        .tracking-section h3 {
+            color: #28a745;
+            margin-top: 0;
+        }
+        .tracking-info {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #ffffff;
+            border-radius: 5px;
+        }
+        .tracking-info strong {
+            color: #333;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .cta-button:hover {
+            background-color: #0056b3;
+        }
+        .secondary-button {
+            display: inline-block;
+            background-color: #28a745;
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 10px 5px;
+            text-align: center;
+        }
+        .secondary-button:hover {
+            background-color: #1e7e34;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+        .support-info {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 20px;
+            }
+            .tracking-info {
+                flex-direction: column;
+            }
+            .cta-button, .secondary-button {
+                display: block;
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">{{storeName}}</div>
+        </div>
+
+        <h1 class="title">📦 Your Order Has Shipped!</h1>
+
+        <div class="greeting">
+            <p>{{greeting}}</p>
+        </div>
+
+        <div class="order-info">
+            <h3>📋 Order Details</h3>
+            <p><strong>Order Number:</strong> {{orderNumber}}</p>
+            <p><strong>Order ID:</strong> {{orderId}}</p>
+        </div>
+
+        <p>{{message}}</p>
+
+        {{#if trackingNumber}}
+        <div class="tracking-section">
+            <h3>🚚 {{trackingInfo}}</h3>
+            
+            <div class="tracking-info">
+                <span><strong>{{trackingNumber}}:</strong></span>
+                <span>{{trackingNumber}}</span>
+            </div>
+
+            {{#if shippingCarrier}}
+            <div class="tracking-info">
+                <span><strong>{{carrier}}:</strong></span>
+                <span>{{shippingCarrier}}</span>
+            </div>
+            {{/if}}
+
+            {{#if estimatedDelivery}}
+            <div class="tracking-info">
+                <span><strong>{{estimatedDelivery}}:</strong></span>
+                <span>{{estimatedDelivery}}</span>
+            </div>
+            {{/if}}
+
+            {{#if trackingUrl}}
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="{{trackingUrl}}" class="secondary-button">Track Your Package</a>
+            </div>
+            {{/if}}
+        </div>
+
+        <p>{{trackingInstructions}}</p>
+        {{/if}}
+
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{{orderUrl}}" class="cta-button">{{orderCta}}</a>
+        </div>
+
+        <div class="support-info">
+            <p><strong>Need Help?</strong></p>
+            <p>{{support}}</p>
+        </div>
+
+        <div class="footer">
+            <p>Thank you for shopping with {{storeName}}!</p>
+            <p>&copy; {{year}} {{storeName}}. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

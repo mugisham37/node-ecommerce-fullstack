@@ -1,525 +1,533 @@
-# E-Commerce Inventory Management System - Project Structure Analysis
+# Full-Stack E-Commerce Monolith - Detailed Project Structure Analysis
 
 ## Project Overview
 
-This is a comprehensive **Spring Boot 3.2.1** based E-Commerce Inventory Management System built with **Java 17**. The project follows enterprise-grade architecture patterns with extensive use of modern technologies including JOOQ, Redis caching, JWT authentication, event-driven architecture, and comprehensive monitoring capabilities.
+This is a comprehensive full-stack e-commerce inventory management system built with modern TypeScript technologies, following a monorepo architecture. The project uses Turborepo for build orchestration and includes web, mobile, and API applications with shared packages for type safety and code reuse.
 
-### Key Technologies & Frameworks
+## Technology Stack
 
-- **Spring Boot 3.2.1** with Spring Security, Spring Data JPA, Spring Cache
-- **Java 17** with Lombok for cleaner code
-- **PostgreSQL** as primary database with **HikariCP** connection pooling
-- **JOOQ** for type-safe SQL queries alongside JPA
-- **Redis** for caching and session management
-- **Flyway** for database migrations
-- **JWT** for authentication and authorization
-- **MapStruct** for DTO mapping
-- **Caffeine** for local caching
-- **OpenAPI/Swagger** for API documentation
-- **Testcontainers** for integration testing
-- **Docker** with multi-stage builds for containerization
-- **AWS S3** integration for cloud storage
-- **Apache Tika** for file processing
-- **Logstash** for structured logging
+### Core Technologies
+- **Language**: TypeScript (primary), JavaScript
+- **Monorepo Management**: Turborepo with npm workspaces
+- **Package Manager**: npm 10.0.0+
+- **Node.js**: 18.0.0+
 
-### Architecture Patterns
+### Frontend Stack
+- **Web**: Next.js 14 with App Router, Tailwind CSS
+- **Mobile**: React Native with TypeScript
+- **UI Components**: Shared component library
 
-- **Event-Driven Architecture** with comprehensive event handling
-- **Layered Architecture** (Controller → Service → Repository)
-- **Domain-Driven Design** principles
-- **CQRS** patterns with JOOQ for complex queries
-- **Microservice-ready** with health checks and monitoring
-- **Security-first** approach with comprehensive validation
+### Backend Stack
+- **API**: Node.js with tRPC for type-safe APIs
+- **Database**: PostgreSQL with Drizzle ORM
+- **Cache**: Redis for caching and session management
+- **Authentication**: JWT with secure session management
 
-## Complete Project Structure
+### DevOps & Infrastructure
+- **Containerization**: Docker with multi-stage builds
+- **Orchestration**: Docker Compose, Kubernetes
+- **CI/CD**: GitHub Actions
+- **Monitoring**: Prometheus, Grafana, Elasticsearch
+- **Cloud**: AWS (Terraform IaC)
+
+## Detailed Project Structure
 
 ```
-inventory-management/
-├── .git/                                    # Git version control
-├── .mvn/                                    # Maven wrapper configuration
-│   └── wrapper/
-│       └── maven-wrapper.properties        # Maven wrapper properties
-├── src/                                     # Source code root
-│   ├── main/                               # Main application source
-│   │   ├── java/                           # Java source files
-│   │   │   └── com/
-│   │   │       └── ecommerce/
-│   │   │           └── inventory/
-│   │   │               ├── InventoryManagementApplication.java  # Main Spring Boot application class
-│   │   │               ├── config/                             # Configuration classes
-│   │   │               │   ├── ActuatorConfig.java            # Spring Boot Actuator configuration
-│   │   │               │   ├── ApiDocumentationSummary.java   # API documentation summary
-│   │   │               │   ├── ApiIntegrationGuide.java       # API integration guide
-│   │   │               │   ├── ApplicationProperties.java     # Application properties binding
-│   │   │               │   ├── AsyncConfig.java               # Asynchronous processing configuration
-│   │   │               │   ├── CacheAspectConfig.java         # Cache aspect configuration
-│   │   │               │   ├── CacheWarmupConfig.java         # Cache warmup configuration
-│   │   │               │   ├── CaffeineConfig.java            # Caffeine cache configuration
-│   │   │               │   ├── ConfigurationValidator.java    # Configuration validation
-│   │   │               │   ├── DatabaseConfig.java            # Database configuration
-│   │   │               │   ├── EventDrivenAsyncConfig.java    # Event-driven async configuration
-│   │   │               │   ├── FileStorageConfig.java         # File storage configuration
-│   │   │               │   ├── FileStorageProperties.java     # File storage properties
-│   │   │               │   ├── FlywayConfig.java              # Flyway migration configuration
-│   │   │               │   ├── HealthCheckConfig.java         # Health check configuration
-│   │   │               │   ├── JacksonConfig.java             # JSON serialization configuration
-│   │   │               │   ├── JooqConfig.java                # JOOQ configuration
-│   │   │               │   ├── JpaConfig.java                 # JPA configuration
-│   │   │               │   ├── JwtConfig.java                 # JWT configuration
-│   │   │               │   ├── LoggingConfig.java             # Logging configuration
-│   │   │               │   ├── OpenApiConfig.java             # OpenAPI/Swagger configuration
-│   │   │               │   ├── OpenApiExamples.java           # OpenAPI examples
-│   │   │               │   ├── QueryPerformanceConfig.java    # Query performance configuration
-│   │   │               │   ├── RedisConfig.java               # Redis configuration
-│   │   │               │   ├── RedisHealthConfig.java         # Redis health check configuration
-│   │   │               │   ├── ReportingConfig.java           # Reporting configuration
-│   │   │               │   ├── SchedulingConfig.java          # Task scheduling configuration
-│   │   │               │   ├── SecurityConfig.java            # Spring Security configuration
-│   │   │               │   ├── SecurityHeadersConfig.java     # Security headers configuration
-│   │   │               │   ├── TransactionConfig.java         # Transaction management configuration
-│   │   │               │   └── ValidationConfig.java          # Validation configuration
-│   │   │               ├── controller/                        # REST API controllers
-│   │   │               │   ├── AuthController.java            # Authentication endpoints
-│   │   │               │   ├── CategoryController.java        # Category management endpoints
-│   │   │               │   ├── FileController.java            # File upload/download endpoints
-│   │   │               │   ├── FileSecurityController.java    # File security endpoints
-│   │   │               │   ├── HealthController.java          # Health check endpoints
-│   │   │               │   ├── InventoryController.java       # Inventory management endpoints
-│   │   │               │   ├── MonitoringController.java      # Monitoring endpoints
-│   │   │               │   ├── OrderController.java           # Order management endpoints
-│   │   │               │   ├── ProductController.java         # Product management endpoints
-│   │   │               │   ├── ReportController.java          # Reporting endpoints
-│   │   │               │   ├── SecurityTestController.java    # Security testing endpoints
-│   │   │               │   ├── SupplierController.java        # Supplier management endpoints
-│   │   │               │   └── UserController.java            # User management endpoints
-│   │   │               ├── dto/                               # Data Transfer Objects
-│   │   │               │   ├── mapper/                        # MapStruct mappers
-│   │   │               │   │   ├── CategoryMapper.java        # Category entity-DTO mapper
-│   │   │               │   │   ├── EntityMapper.java          # Base entity mapper
-│   │   │               │   │   ├── InventoryMapper.java       # Inventory entity-DTO mapper
-│   │   │               │   │   ├── MapperConfig.java          # MapStruct configuration
-│   │   │               │   │   ├── OrderItemMapper.java       # Order item entity-DTO mapper
-│   │   │               │   │   ├── OrderMapper.java           # Order entity-DTO mapper
-│   │   │               │   │   ├── ProductMapper.java         # Product entity-DTO mapper
-│   │   │               │   │   ├── ReportMapper.java          # Report entity-DTO mapper
-│   │   │               │   │   ├── StockMovementMapper.java   # Stock movement entity-DTO mapper
-│   │   │               │   │   ├── SupplierMapper.java        # Supplier entity-DTO mapper
-│   │   │               │   │   └── UserMapper.java            # User entity-DTO mapper
-│   │   │               │   ├── request/                       # Request DTOs
-│   │   │               │   │   ├── AdvancedSearchFilter.java  # Advanced search filter DTO
-│   │   │               │   │   ├── BulkProductUpdateRequest.java # Bulk product update request
-│   │   │               │   │   ├── CategoryCreateRequest.java # Category creation request
-│   │   │               │   │   ├── CategoryUpdateRequest.java # Category update request
-│   │   │               │   │   ├── FileUploadRequest.java     # File upload request
-│   │   │               │   │   ├── FulfillmentRequest.java    # Order fulfillment request
-│   │   │               │   │   ├── InventoryAdjustmentRequest.java # Inventory adjustment request
-│   │   │               │   │   ├── LoginRequest.java          # User login request
-│   │   │               │   │   ├── OrderCancellationRequest.java # Order cancellation request
-│   │   │               │   │   ├── OrderCreateRequest.java    # Order creation request
-│   │   │               │   │   ├── OrderFulfillmentRequest.java # Order fulfillment request
-│   │   │               │   │   ├── OrderItemCreateRequest.java # Order item creation request
-│   │   │               │   │   ├── OrderSearchRequest.java    # Order search request
-│   │   │               │   │   ├── OrderStatusUpdateRequest.java # Order status update request
-│   │   │               │   │   ├── OrderUpdateRequest.java    # Order update request
-│   │   │               │   │   ├── PaginationRequest.java     # Pagination request
-│   │   │               │   │   ├── PartialFulfillmentRequest.java # Partial fulfillment request
-│   │   │               │   │   ├── PricingUpdateRequest.java  # Pricing update request
-│   │   │               │   │   ├── ProductCreateRequest.java  # Product creation request
-│   │   │               │   │   ├── ProductSearchCriteria.java # Product search criteria
-│   │   │               │   │   ├── ProductSearchRequest.java  # Product search request
-│   │   │               │   │   ├── ProductUpdateRequest.java  # Product update request
-│   │   │               │   │   ├── RefreshTokenRequest.java   # JWT refresh token request
-│   │   │               │   │   ├── SupplierCreateRequest.java # Supplier creation request
-│   │   │               │   │   ├── SupplierStatusUpdateRequest.java # Supplier status update request
-│   │   │               │   │   ├── SupplierUpdateRequest.java # Supplier update request
-│   │   │               │   │   ├── UserCreateRequest.java     # User creation request
-│   │   │               │   │   └── UserUpdateRequest.java     # User update request
-│   │   │               │   ├── response/                      # Response DTOs
-│   │   │               │   │   ├── ApiResponse.java           # Generic API response wrapper
-│   │   │               │   │   ├── CategoryResponse.java      # Category response DTO
-│   │   │               │   │   ├── FileUploadResponse.java    # File upload response
-│   │   │               │   │   ├── InventoryMovementReport.java # Inventory movement report
-│   │   │               │   │   ├── InventoryResponse.java     # Inventory response DTO
-│   │   │               │   │   ├── JwtAuthenticationResponse.java # JWT authentication response
-│   │   │               │   │   ├── LowStockAlert.java         # Low stock alert response
-│   │   │               │   │   ├── OrderAnalyticsReport.java  # Order analytics report
-│   │   │               │   │   ├── OrderItemResponse.java     # Order item response DTO
-│   │   │               │   │   ├── OrderResponse.java         # Order response DTO
-│   │   │               │   │   ├── OrderSummaryResponse.java  # Order summary response
-│   │   │               │   │   ├── PagedResponse.java         # Paginated response wrapper
-│   │   │               │   │   ├── ProductResponse.java       # Product response DTO
-│   │   │               │   │   ├── ProductSummaryResponse.java # Product summary response
-│   │   │               │   │   ├── StockMovementResponse.java # Stock movement response DTO
-│   │   │               │   │   ├── SupplierPerformanceResponse.java # Supplier performance response
-│   │   │               │   │   ├── SupplierResponse.java      # Supplier response DTO
-│   │   │               │   │   ├── SupplierSummaryResponse.java # Supplier summary response
-│   │   │               │   │   ├── UserActivityResponse.java  # User activity response DTO
-│   │   │               │   │   └── UserResponse.java          # User response DTO
-│   │   │               │   ├── validation/                    # Custom validation
-│   │   │               │   │   ├── DtoValidationTest.java     # DTO validation test
-│   │   │               │   │   ├── InputSanitizer.java        # Input sanitization utility
-│   │   │               │   │   ├── SafeInput.java             # Safe input annotation
-│   │   │               │   │   ├── SafeInputValidator.java    # Safe input validator
-│   │   │               │   │   ├── ValidationAspect.java      # Validation aspect
-│   │   │               │   │   ├── ValidationErrorAggregator.java # Validation error aggregator
-│   │   │               │   │   ├── ValidationGroups.java      # Validation groups
-│   │   │               │   │   ├── ValidationService.java     # Validation service
-│   │   │               │   │   ├── ValidEmail.java            # Email validation annotation
-│   │   │               │   │   ├── ValidEmailValidator.java   # Email validator
-│   │   │               │   │   ├── ValidOrderStatus.java      # Order status validation annotation
-│   │   │               │   │   ├── ValidOrderStatusValidator.java # Order status validator
-│   │   │               │   │   ├── ValidPassword.java         # Password validation annotation
-│   │   │               │   │   ├── ValidPasswordValidator.java # Password validator
-│   │   │               │   │   ├── ValidPhoneNumber.java      # Phone number validation annotation
-│   │   │               │   │   ├── ValidPhoneNumberValidator.java # Phone number validator
-│   │   │               │   │   ├── ValidPrice.java            # Price validation annotation
-│   │   │               │   │   ├── ValidPriceValidator.java   # Price validator
-│   │   │               │   │   ├── ValidProductName.java      # Product name validation annotation
-│   │   │               │   │   ├── ValidProductNameValidator.java # Product name validator
-│   │   │               │   │   ├── ValidQuantity.java         # Quantity validation annotation
-│   │   │               │   │   ├── ValidQuantityValidator.java # Quantity validator
-│   │   │               │   │   ├── ValidRole.java             # Role validation annotation
-│   │   │               │   │   ├── ValidRoleValidator.java    # Role validator
-│   │   │               │   │   ├── ValidSku.java              # SKU validation annotation
-│   │   │               │   │   ├── ValidSkuValidator.java     # SKU validator
-│   │   │               │   │   ├── ValidSlug.java             # Slug validation annotation
-│   │   │               │   │   └── ValidSlugValidator.java    # Slug validator
-│   │   │               │   └── versioning/                    # API versioning
-│   │   │               │       ├── ApiVersion.java           # API version annotation
-│   │   │               │       ├── ApiVersionCompatibility.java # API version compatibility
-│   │   │               │       ├── ApiVersioningConfig.java  # API versioning configuration
-│   │   │               │       ├── ApiVersionRequestMappingHandlerMapping.java # Version request mapping
-│   │   │               │       └── VersionedResponse.java    # Versioned response wrapper
-│   │   │               ├── entity/                            # JPA entities
-│   │   │               │   ├── AuditableEntity.java          # Base auditable entity
-│   │   │               │   ├── Category.java                 # Product category entity
-│   │   │               │   ├── Inventory.java                # Inventory entity
-│   │   │               │   ├── Order.java                    # Order entity
-│   │   │               │   ├── OrderItem.java                # Order item entity
-│   │   │               │   ├── OrderStatus.java              # Order status enum
-│   │   │               │   ├── Product.java                  # Product entity
-│   │   │               │   ├── Role.java                     # User role enum
-│   │   │               │   ├── StockMovement.java            # Stock movement entity
-│   │   │               │   ├── StockMovementType.java        # Stock movement type enum
-│   │   │               │   ├── Supplier.java                 # Supplier entity
-│   │   │               │   ├── SupplierStatus.java           # Supplier status enum
-│   │   │               │   ├── User.java                     # User entity
-│   │   │               │   └── UserActivity.java             # User activity entity
-│   │   │               ├── event/                            # Event-driven architecture
-│   │   │               │   ├── builder/                      # Event builders
-│   │   │               │   │   ├── EventBuilderFactory.java # Event builder factory
-│   │   │               │   │   ├── InventoryEventBuilder.java # Inventory event builder
-│   │   │               │   │   ├── OrderEventBuilder.java   # Order event builder
-│   │   │               │   │   └── SupplierEventBuilder.java # Supplier event builder
-│   │   │               │   ├── inventory/                    # Inventory events
-│   │   │               │   │   ├── InventoryAllocatedEvent.java # Inventory allocated event
-│   │   │               │   │   ├── InventoryEvent.java       # Base inventory event
-│   │   │               │   │   ├── InventoryReleasedEvent.java # Inventory released event
-│   │   │               │   │   ├── LowStockEvent.java        # Low stock event
-│   │   │               │   │   └── StockUpdatedEvent.java    # Stock updated event
-│   │   │               │   ├── listener/                     # Event listeners
-│   │   │               │   │   ├── EventProcessingMetrics.java # Event processing metrics
-│   │   │               │   │   ├── InventoryEventListener.java # Inventory event listener
-│   │   │               │   │   ├── NotificationEventListener.java # Notification event listener
-│   │   │               │   │   ├── OrderEventListener.java   # Order event listener
-│   │   │               │   │   └── SupplierEventListener.java # Supplier event listener
-│   │   │               │   ├── monitoring/                   # Event monitoring
-│   │   │               │   │   ├── EventProcessingHealthReport.java # Event processing health report
-│   │   │               │   │   └── EventProcessingMonitoringService.java # Event processing monitoring
-│   │   │               │   ├── order/                        # Order events
-│   │   │               │   │   ├── OrderCancelledEvent.java  # Order cancelled event
-│   │   │               │   │   ├── OrderCreatedEvent.java    # Order created event
-│   │   │               │   │   ├── OrderEvent.java           # Base order event
-│   │   │               │   │   └── OrderStatusChangedEvent.java # Order status changed event
-│   │   │               │   ├── retry/                        # Event retry mechanism
-│   │   │               │   │   ├── DeadLetterQueueEntry.java # Dead letter queue entry
-│   │   │               │   │   ├── DeadLetterQueueService.java # Dead letter queue service
-│   │   │               │   │   ├── DeadLetterQueueStatistics.java # Dead letter queue statistics
-│   │   │               │   │   ├── EventRetryContext.java    # Event retry context
-│   │   │               │   │   ├── EventRetryRecord.java     # Event retry record
-│   │   │               │   │   ├── EventRetryRepository.java # Event retry repository
-│   │   │               │   │   ├── EventRetryService.java    # Event retry service
-│   │   │               │   │   ├── RetryPolicy.java          # Retry policy
-│   │   │               │   │   └── RetryStatistics.java      # Retry statistics
-│   │   │               │   ├── supplier/                     # Supplier events
-│   │   │               │   │   ├── SupplierCreatedEvent.java # Supplier created event
-│   │   │               │   │   ├── SupplierEvent.java        # Base supplier event
-│   │   │               │   │   └── SupplierStatusChangedEvent.java # Supplier status changed event
-│   │   │               │   ├── BaseEvent.java                # Base event class
-│   │   │               │   ├── EventMetricsCollector.java    # Event metrics collector
-│   │   │               │   ├── EventPublisher.java           # Event publisher
-│   │   │               │   ├── EventPublishingException.java # Event publishing exception
-│   │   │               │   ├── EventVersionRegistry.java     # Event version registry
-│   │   │               │   └── UnsupportedEventVersionException.java # Unsupported event version exception
-│   │   │               ├── exception/                        # Exception handling
-│   │   │               │   ├── BusinessException.java        # Base business exception
-│   │   │               │   ├── CategoryNotFoundException.java # Category not found exception
-│   │   │               │   ├── ErrorResponse.java            # Error response DTO
-│   │   │               │   ├── FileStorageException.java     # File storage exception
-│   │   │               │   ├── FileValidationException.java  # File validation exception
-│   │   │               │   ├── GlobalExceptionHandler.java   # Global exception handler
-│   │   │               │   ├── InsufficientStockException.java # Insufficient stock exception
-│   │   │               │   ├── InvalidOrderStatusTransitionException.java # Invalid order status transition exception
-│   │   │               │   ├── InventoryOperationException.java # Inventory operation exception
-│   │   │               │   ├── OrderNotFoundException.java   # Order not found exception
-│   │   │               │   ├── ProductNotFoundException.java # Product not found exception
-│   │   │               │   ├── ResourceNotFoundException.java # Resource not found exception
-│   │   │               │   ├── SupplierNotFoundException.java # Supplier not found exception
-│   │   │               │   ├── UserAlreadyExistsException.java # User already exists exception
-│   │   │               │   └── ValidationException.java      # Validation exception
-│   │   │               ├── health/                           # Health checks
-│   │   │               │   ├── BusinessMetricsHealthIndicator.java # Business metrics health indicator
-│   │   │               │   ├── DatabaseHealthIndicator.java  # Database health indicator
-│   │   │               │   └── RedisHealthIndicator.java     # Redis health indicator
-│   │   │               ├── logging/                          # Logging infrastructure
-│   │   │               │   ├── CorrelationIdFilter.java      # Correlation ID filter
-│   │   │               │   ├── LoggingContext.java           # Logging context
-│   │   │               │   ├── PerformanceLoggingAspect.java # Performance logging aspect
-│   │   │               │   └── StructuredLogger.java         # Structured logger
-│   │   │               ├── metrics/                          # Metrics configuration
-│   │   │               │   └── CustomMetricsConfig.java      # Custom metrics configuration
-│   │   │               ├── monitoring/                       # Monitoring services
-│   │   │               │   ├── AlertingService.java          # Alerting service
-│   │   │               │   ├── BusinessMetricMonitoringService.java # Business metric monitoring
-│   │   │               │   ├── PerformanceMonitoringService.java # Performance monitoring
-│   │   │               │   └── SystemResourceMonitoringService.java # System resource monitoring
-│   │   │               ├── repository/                       # Data access layer
-│   │   │               │   ├── AbstractBaseRepository.java   # Abstract base repository
-│   │   │               │   ├── BaseRepository.java           # Base repository interface
-│   │   │               │   ├── CategoryRepository.java       # Category repository
-│   │   │               │   ├── ConnectionManager.java        # Database connection manager
-│   │   │               │   ├── FullTextSearchService.java    # Full-text search service
-│   │   │               │   ├── InventoryRepository.java      # Inventory repository
-│   │   │               │   ├── OrderRepository.java          # Order repository
-│   │   │               │   ├── ProductRepository.java        # Product repository
-│   │   │               │   ├── StockMovementRepository.java  # Stock movement repository
-│   │   │               │   ├── SupplierRepository.java       # Supplier repository
-│   │   │               │   ├── UserActivityRepository.java   # User activity repository
-│   │   │               │   └── UserRepository.java           # User repository
-│   │   │               ├── schema/                           # Database schema definitions
-│   │   │               │   ├── CategorySchema.java           # Category schema
-│   │   │               │   ├── DatabaseSchemaRegistry.java   # Database schema registry
-│   │   │               │   ├── InventorySchema.java          # Inventory schema
-│   │   │               │   ├── OrderItemSchema.java          # Order item schema
-│   │   │               │   ├── OrderSchema.java              # Order schema
-│   │   │               │   ├── ProductSchema.java            # Product schema
-│   │   │               │   ├── StockMovementSchema.java      # Stock movement schema
-│   │   │               │   ├── SupplierSchema.java           # Supplier schema
-│   │   │               │   ├── UserActivitySchema.java       # User activity schema
-│   │   │               │   └── UserSchema.java               # User schema
-│   │   │               ├── security/                         # Security implementation
-│   │   │               │   ├── CustomUserDetailsService.java # Custom user details service
-│   │   │               │   ├── JwtAccessDeniedHandler.java   # JWT access denied handler
-│   │   │               │   ├── JwtAuthenticationEntryPoint.java # JWT authentication entry point
-│   │   │               │   ├── JwtAuthenticationFilter.java  # JWT authentication filter
-│   │   │               │   ├── JwtTokenProvider.java         # JWT token provider
-│   │   │               │   ├── SecurityExpressions.java      # Security expressions
-│   │   │               │   └── UserPrincipal.java            # User principal
-│   │   │               └── service/                          # Business logic layer
-│   │   │                   ├── analytics/                    # Analytics services
-│   │   │                   │   ├── BusinessIntelligenceService.java # Business intelligence service
-│   │   │                   │   ├── CustomerBehaviorAnalyzer.java # Customer behavior analyzer
-│   │   │                   │   ├── InventoryTrendAnalyzer.java # Inventory trend analyzer
-│   │   │                   │   ├── SalesPerformanceAnalyzer.java # Sales performance analyzer
-│   │   │                   │   └── SupplierPerformanceAnalyzer.java # Supplier performance analyzer
-│   │   │                   ├── report/                       # Reporting services
-│   │   │                   │   ├── templates/                # Report templates
-│   │   │                   │   │   ├── AbstractReportTemplate.java # Abstract report template
-│   │   │                   │   │   └── InventoryAnalyticsTemplate.java # Inventory analytics template
-│   │   │                   │   ├── ReportArchiveService.java # Report archive service
-│   │   │                   │   ├── ReportCacheService.java   # Report cache service
-│   │   │                   │   ├── ReportColumn.java         # Report column definition
-│   │   │                   │   ├── ReportData.java           # Report data container
-│   │   │                   │   ├── ReportDataAggregationEngine.java # Report data aggregation engine
-│   │   │                   │   ├── ReportDeliveryResult.java # Report delivery result
-│   │   │                   │   ├── ReportDeliveryService.java # Report delivery service
-│   │   │                   │   ├── ReportExecution.java      # Report execution
-│   │   │                   │   ├── ReportFormatService.java  # Report format service
-│   │   │                   │   ├── ReportGenerationException.java # Report generation exception
-│   │   │                   │   ├── ReportGenerationService.java # Report generation service
-│   │   │                   │   ├── ReportParameter.java      # Report parameter
-│   │   │                   │   ├── ReportParameterValidationException.java # Report parameter validation exception
-│   │   │                   │   ├── ReportParameterValidator.java # Report parameter validator
-│   │   │                   │   ├── ReportSection.java        # Report section
-│   │   │                   │   ├── ReportSubscription.java   # Report subscription
-│   │   │                   │   ├── ReportSubscriptionRequest.java # Report subscription request
-│   │   │                   │   ├── ReportTemplate.java       # Report template
-│   │   │                   │   ├── ScheduledReport.java      # Scheduled report
-│   │   │                   │   ├── ScheduledReportingService.java # Scheduled reporting service
-│   │   │                   │   └── ScheduledReportRequest.java # Scheduled report request
-│   │   │                   ├── storage/                      # Storage services
-│   │   │                   │   ├── LocalStorageBackend.java  # Local storage backend
-│   │   │                   │   ├── S3StorageBackend.java     # S3 storage backend
-│   │   │                   │   └── StorageBackend.java       # Storage backend interface
-│   │   │                   ├── BaseScheduledTask.java        # Base scheduled task
-│   │   │                   ├── CacheAlertingService.java     # Cache alerting service
-│   │   │                   ├── CacheEvictionService.java     # Cache eviction service
-│   │   │                   ├── CacheMonitoringService.java   # Cache monitoring service
-│   │   │                   ├── CacheOptimizationTask.java    # Cache optimization task
-│   │   │                   ├── CachePerformanceService.java  # Cache performance service
-│   │   │                   ├── CacheService.java             # Cache service
-│   │   │                   ├── CacheWarmupService.java       # Cache warmup service
-│   │   │                   ├── CategoryService.java          # Category service
-│   │   │                   ├── DailyInventoryReportTask.java # Daily inventory report task
-│   │   │                   ├── DatabaseOptimizationTask.java # Database optimization task
-│   │   │                   ├── DataCleanupTask.java          # Data cleanup task
-│   │   │                   ├── EnhancedFileStorageService.java # Enhanced file storage service
-│   │   │                   ├── EventDrivenCacheService.java  # Event-driven cache service
-│   │   │                   ├── EventDrivenWorkflowService.java # Event-driven workflow service
-│   │   │                   ├── FileAccessControlService.java # File access control service
-│   │   │                   ├── FileAccessLogService.java     # File access log service
-│   │   │                   ├── FileCleanupService.java       # File cleanup service
-│   │   │                   ├── FileNamingService.java        # File naming service
-│   │   │                   ├── FileStorageService.java       # File storage service
-│   │   │                   ├── FileValidationService.java    # File validation service
-│   │   │                   ├── ImageProcessingService.java   # Image processing service
-│   │   │                   ├── InventoryAnalyticsTask.java   # Inventory analytics task
-│   │   │                   ├── InventoryService.java         # Inventory service
-│   │   │                   ├── LowStockAlertTask.java        # Low stock alert task
-│   │   │                   ├── MetricsService.java           # Metrics service
-│   │   │                   ├── NotificationService.java      # Notification service
-│   │   │                   ├── OrderService.java             # Order service
-│   │   │                   ├── ProductService.java           # Product service
-│   │   │                   ├── RedisMonitoringService.java   # Redis monitoring service
-│   │   │                   ├── ReorderRecommendationTask.java # Reorder recommendation task
-│   │   │                   ├── ReportService.java            # Report service
-│   │   │                   ├── ScheduledTaskMonitoringService.java # Scheduled task monitoring service
-│   │   │                   ├── ScheduledTaskPerformanceService.java # Scheduled task performance service
-│   │   │                   ├── ScheduledTaskRegistry.java    # Scheduled task registry
-│   │   │                   ├── SupplierService.java          # Supplier service
-│   │   │                   ├── SystemHealthMonitoringTask.java # System health monitoring task
-│   │   │                   ├── UserActivityService.java      # User activity service
-│   │   │                   ├── UserService.java              # User service
-│   │   │                   └── VirusScanningService.java     # Virus scanning service
-│   │   └── resources/                                        # Application resources
-│   │       ├── db/                                          # Database resources
-│   │       │   └── migration/                               # Flyway migration scripts
-│   │       │       ├── V001__Create_users_table.sql        # Create users table migration
-│   │       │       ├── V1__Create_users_table.sql          # Create users table migration (duplicate)
-│   │       │       ├── V2__Create_categories_table.sql     # Create categories table migration
-│   │       │       ├── V3__Create_suppliers_table.sql      # Create suppliers table migration
-│   │       │       ├── V4__Create_products_table.sql       # Create products table migration
-│   │       │       ├── V5__Create_inventory_table.sql      # Create inventory table migration
-│   │       │       ├── V6__Create_stock_movements_table.sql # Create stock movements table migration
-│   │       │       ├── V7__Create_orders_table.sql         # Create orders table migration
-│   │       │       ├── V8__Create_order_items_table.sql    # Create order items table migration
-│   │       │       ├── V9__Insert_initial_data.sql         # Insert initial data migration
-│   │       │       ├── V10__Create_user_activities_table.sql # Create user activities table migration
-│   │       │       ├── V11__Add_production_indexes_and_optimizations.sql # Add production indexes migration
-│   │       │       └── V12__Seed_development_data.sql      # Seed development data migration
-│   │       ├── application.yml                             # Main application configuration
-│   │       ├── application-staging.yml                     # Staging environment configuration
-│   │       └── logback-spring.xml                          # Logback logging configuration
-│   └── test/                                               # Test source code
-│       ├── java/                                           # Java test files
-│       │   └── com/
-│       │       └── ecommerce/
-│       │           └── inventory/
-│       │               ├── config/                         # Configuration tests
-│       │               │   └── SecurityConfigTest.java    # Security configuration test
-│       │               ├── dto/                            # DTO tests
-│       │               │   └── validation/                 # Validation tests
-│       │               │       └── ValidationIntegrationTest.java # Validation integration test
-│       │               ├── entity/                         # Entity tests
-│       │               │   ├── AdvancedEntityRelationshipsTest.java # Advanced entity relationships test
-│       │               │   └── EntityRelationshipIntegrationTest.java # Entity relationship integration test
-│       │               ├── event/                          # Event tests
-│       │               │   ├── listener/                   # Event listener tests
-│       │               │   │   └── EventListenerIntegrationTest.java # Event listener integration test
-│       │               │   └── retry/                      # Event retry tests
-│       │               │       └── EventRetryServiceTest.java # Event retry service test
-│       │               ├── integration/                    # Integration tests
-│       │               │   ├── BaseIntegrationTest.java   # Base integration test
-│       │               │   ├── EndToEndWorkflowValidationTest.java # End-to-end workflow validation test
-│       │               │   ├── EventDrivenWorkflowIntegrationTest.java # Event-driven workflow integration test
-│       │               │   ├── FinalSystemIntegrationTest.java # Final system integration test
-│       │               │   └── SecurityAndPerformanceValidationTest.java # Security and performance validation test
-│       │               ├── security/                       # Security tests
-│       │               │   └── JwtTokenProviderTest.java  # JWT token provider test
-│       │               └── service/                        # Service tests
-│       │                   ├── CacheIntegrationTest.java  # Cache integration test
-│       │                   ├── FileAccessControlServiceTest.java # File access control service test
-│       │                   ├── FileStorageServiceTest.java # File storage service test
-│       │                   ├── ImageProcessingServiceTest.java # Image processing service test
-│       │                   └── UserServiceTest.java       # User service test
-│       └── resources/                                      # Test resources
-│           └── application-test.yml                        # Test environment configuration
-├── target/                                                 # Maven build output (generated)
-├── Dockerfile                                              # Docker container configuration
-├── mvnw.cmd                                                # Maven wrapper script (Windows)
-└── pom.xml                                                 # Maven project configuration
+fullstack-ecommerce-monolith/
+├── 📁 .git/                                    # Git repository
+├── 📁 .github/                                 # GitHub workflows and templates
+├── 📁 .kiro/                                   # Kiro IDE configuration
+├── 📁 .vscode/                                 # VS Code configuration
+├── 📄 .eslintrc.js                             # ESLint configuration
+├── 📄 .gitignore                               # Git ignore rules
+├── 📄 .prettierrc                              # Prettier configuration
+├── 📄 docker-compose.yml                       # Development Docker setup
+├── 📄 docker-compose.prod.yml                  # Production Docker setup
+├── 📄 jest.config.js                           # Jest test configuration
+├── 📄 jest.setup.js                            # Jest setup file
+├── 📄 package.json                             # Root package configuration
+├── 📄 package-lock.json                        # Dependency lock file
+├── 📄 playwright.config.ts                     # Playwright E2E test config
+├── 📄 README.md                                # Project documentation
+├── 📄 tsconfig.json                            # TypeScript configuration
+├── 📄 turbo.json                               # Turborepo configuration
+│
+├── 📁 apps/                                    # Applications
+│   ├── 📁 admin/                               # Admin Dashboard (Empty - Future)
+│   │
+│   ├── 📁 api/                                 # Node.js tRPC API Server
+│   │   ├── 📄 .dockerignore                    # Docker ignore for API
+│   │   ├── 📄 .env.example                     # Environment variables template
+│   │   ├── 📄 Dockerfile                       # API Docker configuration
+│   │   ├── 📄 package.json                     # API package configuration
+│   │   ├── 📄 README.md                        # API documentation
+│   │   ├── 📄 tsconfig.json                    # API TypeScript config
+│   │   └── 📁 src/                             # API source code
+│   │       ├── 📄 index.ts                     # API entry point
+│   │       ├── 📁 auth/                        # Authentication services
+│   │       ├── 📁 database/                    # Database connections
+│   │       ├── 📁 events/                      # Event handling system
+│   │       ├── 📁 jobs/                        # Background job processing
+│   │       ├── 📁 monitoring/                  # Health checks and metrics
+│   │       ├── 📁 services/                    # Business logic services
+│   │       ├── 📁 trpc/                        # tRPC router definitions
+│   │       └── 📁 utils/                       # API utilities
+│   │
+│   ├── 📁 mobile/                              # React Native Mobile App
+│   │   ├── 📄 .dockerignore                    # Docker ignore for mobile
+│   │   ├── 📄 .gitignore                       # Mobile-specific git ignore
+│   │   ├── 📄 app.json                         # Expo/React Native config
+│   │   ├── 📄 babel.config.js                  # Babel configuration
+│   │   ├── 📄 Dockerfile                       # Mobile Docker config
+│   │   ├── 📄 index.js                         # Mobile app entry point
+│   │   ├── 📄 metro.config.js                  # Metro bundler config
+│   │   ├── 📄 package.json                     # Mobile package config
+│   │   ├── 📄 README.md                        # Mobile documentation
+│   │   ├── 📄 tsconfig.json                    # Mobile TypeScript config
+│   │   ├── 📁 android/                         # Android-specific files
+│   │   │   └── 📁 app/                         # Android app configuration
+│   │   ├── 📁 ios/                             # iOS-specific files
+│   │   │   └── 📄 GoogleService-Info.plist     # Firebase iOS config
+│   │   └── 📁 src/                             # Mobile source code
+│   │       ├── 📄 App.tsx                      # Main App component
+│   │       ├── 📁 assets/                      # Static assets
+│   │       ├── 📁 components/                  # React Native components
+│   │       ├── 📁 constants/                   # App constants
+│   │       ├── 📁 hooks/                       # Custom React hooks
+│   │       ├── 📁 lib/                         # Third-party integrations
+│   │       ├── 📁 navigation/                  # Navigation configuration
+│   │       ├── 📁 providers/                   # Context providers
+│   │       ├── 📁 screens/                     # App screens
+│   │       ├── 📁 services/                    # API and external services
+│   │       ├── 📁 store/                       # State management
+│   │       ├── 📁 types/                       # TypeScript type definitions
+│   │       └── 📁 utils/                       # Mobile utilities
+│   │
+│   └── 📁 web/                                 # Next.js 14 Web Application
+│       ├── 📄 .dockerignore                    # Docker ignore for web
+│       ├── 📄 .gitignore                       # Web-specific git ignore
+│       ├── 📄 Dockerfile                       # Web Docker configuration
+│       ├── 📄 eslint.config.mjs                # Web ESLint config
+│       ├── 📄 next-env.d.ts                    # Next.js type definitions
+│       ├── 📄 next.config.ts                   # Next.js configuration
+│       ├── 📄 package.json                     # Web package configuration
+│       ├── 📄 postcss.config.mjs               # PostCSS configuration
+│       ├── 📄 README.md                        # Web documentation
+│       ├── 📄 REAL_TIME_NOTIFICATIONS_IMPLEMENTATION.md  # Feature docs
+│       ├── 📄 tailwind.config.js               # Tailwind CSS config
+│       ├── 📄 tsconfig.json                    # Web TypeScript config
+│       ├── 📄 tsconfig.tsbuildinfo             # TypeScript build info
+│       ├── 📁 .next/                           # Next.js build output
+│       │   ├── 📄 package.json                 # Build package info
+│       │   ├── 📄 postcss.js                   # PostCSS build file
+│       │   ├── 📄 postcss.js.map               # PostCSS source map
+│       │   ├── 📄 trace                        # Build trace
+│       │   ├── 📄 turbopack                    # Turbopack info
+│       │   ├── 📁 build/                       # Production build
+│       │   ├── 📁 cache/                       # Build cache
+│       │   ├── 📁 diagnostics/                 # Build diagnostics
+│       │   ├── 📁 server/                      # Server-side build
+│       │   ├── 📁 static/                      # Static assets
+│       │   └── 📁 types/                       # Generated types
+│       ├── 📁 public/                          # Static public assets
+│       │   ├── 📄 file.svg                     # File icon
+│       │   ├── 📄 globe.svg                    # Globe icon
+│       │   ├── 📄 next.svg                     # Next.js logo
+│       │   ├── 📄 vercel.svg                   # Vercel logo
+│       │   └── 📄 window.svg                   # Window icon
+│       └── 📁 src/                             # Web source code
+│           ├── 📄 middleware.ts                # Next.js middleware
+│           ├── 📁 app/                         # Next.js App Router
+│           ├── 📁 components/                  # React components
+│           ├── 📁 examples/                    # Example implementations
+│           ├── 📁 hooks/                       # Custom React hooks
+│           ├── 📁 lib/                         # Third-party integrations
+│           ├── 📁 services/                    # API and external services
+│           ├── 📁 store/                       # State management
+│           └── 📁 utils/                       # Web utilities
+│
+├── 📁 packages/                                # Shared Packages
+│   ├── 📁 api-client/                          # API Client Library
+│   │   ├── 📄 package.json                     # API client package config
+│   │   ├── 📄 README.md                        # API client documentation
+│   │   ├── 📄 tsconfig.json                    # API client TypeScript config
+│   │   └── 📁 src/                             # API client source
+│   │       ├── 📄 index.ts                     # API client entry point
+│   │       ├── 📁 auth/                        # Authentication client
+│   │       ├── 📁 platforms/                   # Platform-specific clients
+│   │       ├── 📁 react/                       # React integration
+│   │       ├── 📁 react-native/                # React Native integration
+│   │       ├── 📁 trpc/                        # tRPC client setup
+│   │       └── 📁 websocket/                   # WebSocket client
+│   │
+│   ├── 📁 cache/                               # Cache Layer (Redis)
+│   │   ├── 📄 package.json                     # Cache package config
+│   │   ├── 📄 README.md                        # Cache documentation
+│   │   ├── 📄 tsconfig.json                    # Cache TypeScript config
+│   │   └── 📁 src/                             # Cache source code
+│   │       ├── 📄 cache.manager.ts             # Cache manager
+│   │       ├── 📄 index.ts                     # Cache entry point
+│   │       ├── 📁 config/                      # Cache configuration
+│   │       ├── 📁 middleware/                  # Cache middleware
+│   │       ├── 📁 monitoring/                  # Cache monitoring
+│   │       ├── 📁 providers/                   # Cache providers
+│   │       ├── 📁 strategies/                  # Caching strategies
+│   │       ├── 📁 types/                       # Cache type definitions
+│   │       ├── 📁 utils/                       # Cache utilities
+│   │       └── 📁 warming/                     # Cache warming
+│   │
+│   ├── 📁 config/                              # Configuration Management
+│   │   ├── 📄 build.ps1                        # Build script
+│   │   ├── 📄 dev.ps1                          # Development script
+│   │   ├── 📄 package.json                     # Config package config
+│   │   ├── 📄 tsconfig.json                    # Config TypeScript config
+│   │   └── 📁 src/                             # Config source code
+│   │       ├── 📄 index.ts                     # Config entry point
+│   │       └── 📁 environments/                # Environment configurations
+│   │
+│   ├── 📁 constants/                           # Application Constants
+│   │   ├── 📄 build.ps1                        # Build script
+│   │   ├── 📄 dev.ps1                          # Development script
+│   │   ├── 📄 package.json                     # Constants package config
+│   │   ├── 📄 tsconfig.json                    # Constants TypeScript config
+│   │   └── 📁 src/                             # Constants source code
+│   │       └── 📄 index.ts                     # Constants entry point
+│   │
+│   ├── 📁 database/                            # Database Layer (Drizzle ORM)
+│   │   ├── 📄 drizzle.config.ts                # Drizzle configuration
+│   │   ├── 📄 package.json                     # Database package config
+│   │   ├── 📄 README.md                        # Database documentation
+│   │   ├── 📄 tsconfig.json                    # Database TypeScript config
+│   │   ├── 📁 dist/                            # Compiled database code
+│   │   │   ├── 📄 .tsbuildinfo                 # TypeScript build info
+│   │   │   ├── 📄 index.d.ts                   # Type definitions
+│   │   │   ├── 📄 index.d.ts.map               # Type definition map
+│   │   │   ├── 📄 index.js                     # Compiled JavaScript
+│   │   │   ├── 📄 index.js.map                 # JavaScript source map
+│   │   │   ├── 📁 connection/                  # Database connections
+│   │   │   ├── 📁 health/                      # Health checks
+│   │   │   ├── 📁 monitoring/                  # Database monitoring
+│   │   │   ├── 📁 query-builder/               # Query builders
+│   │   │   ├── 📁 repositories/                # Data repositories
+│   │   │   ├── 📁 schema/                      # Database schemas
+│   │   │   ├── 📁 seeds/                       # Database seeds
+│   │   │   └── 📁 transactions/                # Transaction management
+│   │   ├── 📁 migrations/                      # Database migrations
+│   │   │   └── 📁 sql/                         # SQL migration files
+│   │   ├── 📁 scripts/                         # Database scripts
+│   │   │   ├── 📄 backup.ps1                   # Backup script
+│   │   │   └── 📄 restore.ps1                  # Restore script
+│   │   └── 📁 src/                             # Database source code
+│   │       ├── 📄 index.ts                     # Database entry point
+│   │       ├── 📁 connection/                  # Database connections
+│   │       ├── 📁 health/                      # Health checks
+│   │       ├── 📁 migrations/                  # Migration management
+│   │       ├── 📁 monitoring/                  # Database monitoring
+│   │       ├── 📁 query-builder/               # Query builders
+│   │       ├── 📁 repositories/                # Data repositories
+│   │       ├── 📁 schema/                      # Database schemas
+│   │       ├── 📁 seeds/                       # Database seeds
+│   │       └── 📁 transactions/                # Transaction management
+│   │
+│   ├── 📁 shared/                              # Shared Types and Utilities
+│   │   ├── 📄 build.ps1                        # Build script
+│   │   ├── 📄 dev.ps1                          # Development script
+│   │   ├── 📄 package.json                     # Shared package config
+│   │   ├── 📄 README.md                        # Shared documentation
+│   │   ├── 📄 tsconfig.json                    # Shared TypeScript config
+│   │   ├── 📄 tsconfig.tsbuildinfo             # TypeScript build info
+│   │   ├── 📁 dist/                            # Compiled shared code
+│   │   │   ├── 📄 index.d.ts                   # Type definitions
+│   │   │   ├── 📄 index.d.ts.map               # Type definition map
+│   │   │   ├── 📄 index.js                     # Compiled JavaScript
+│   │   │   ├── 📄 index.js.map                 # JavaScript source map
+│   │   │   ├── 📁 components/                  # Shared components
+│   │   │   ├── 📁 errors/                      # Error handling
+│   │   │   ├── 📁 services/                    # Shared services
+│   │   │   ├── 📁 types/                       # Type definitions
+│   │   │   └── 📁 utils/                       # Shared utilities
+│   │   └── 📁 src/                             # Shared source code
+│   │       ├── 📄 index.ts                     # Shared entry point
+│   │       ├── 📁 components/                  # Shared components
+│   │       ├── 📁 errors/                      # Error handling
+│   │       ├── 📁 services/                    # Shared services
+│   │       ├── 📁 types/                       # Type definitions
+│   │       └── 📁 utils/                       # Shared utilities
+│   │
+│   ├── 📁 ui/                                  # UI Component Library (Empty)
+│   │
+│   └── 📁 validation/                          # Validation Schemas (Zod)
+│       ├── 📄 build.ps1                        # Build script
+│       ├── 📄 dev.ps1                          # Development script
+│       ├── 📄 package.json                     # Validation package config
+│       ├── 📄 README.md                        # Validation documentation
+│       ├── 📄 tsconfig.json                    # Validation TypeScript config
+│       └── 📁 src/                             # Validation source code
+│           ├── 📄 index.ts                     # Validation entry point
+│           ├── 📁 schemas/                     # Zod schemas
+│           ├── 📁 types/                       # Validation types
+│           ├── 📁 utils/                       # Validation utilities
+│           └── 📁 validators/                  # Custom validators
+│
+├── 📁 infrastructure/                          # Infrastructure as Code
+│   ├── 📁 cdn/                                 # CDN Configuration
+│   │   ├── 📄 cloudflare-config.json           # Cloudflare settings
+│   │   └── 📄 optimization.conf                # CDN optimization
+│   │
+│   ├── 📁 database/                            # Database Infrastructure
+│   │   └── 📄 postgres.conf                    # PostgreSQL configuration
+│   │
+│   ├── 📁 docker/                              # Docker Infrastructure
+│   │   ├── 📄 .env.example                     # Docker environment template
+│   │   ├── 📄 docker-entrypoint.sh             # Docker entry script
+│   │   ├── 📄 healthcheck.sh                   # Health check script
+│   │   ├── 📁 grafana/                         # Grafana configuration
+│   │   │   ├── 📁 dashboards/                  # Grafana dashboards
+│   │   │   └── 📁 datasources/                 # Grafana data sources
+│   │   ├── 📁 nginx/                           # Nginx configuration
+│   │   │   └── 📄 nginx.conf                   # Nginx config file
+│   │   ├── 📁 postgres/                        # PostgreSQL Docker config
+│   │   │   └── 📄 postgresql.conf              # PostgreSQL settings
+│   │   ├── 📁 prometheus/                      # Prometheus configuration
+│   │   │   └── 📄 prometheus.yml               # Prometheus config
+│   │   └── 📁 redis/                           # Redis configuration
+│   │       └── 📄 redis.conf                   # Redis config file
+│   │
+│   ├── 📁 failover/                            # Failover Configuration
+│   │   └── 📄 auto-failover.yml                # Auto-failover setup
+│   │
+│   ├── 📁 ha/                                  # High Availability
+│   │   ├── 📄 application-deployment.yml       # App HA deployment
+│   │   ├── 📄 database-cluster.yml             # Database clustering
+│   │   ├── 📄 load-balancer.yml                # Load balancer config
+│   │   └── 📄 redis-cluster.yml                # Redis clustering
+│   │
+│   ├── 📁 kubernetes/                          # Kubernetes Manifests
+│   │   ├── 📄 api-deployment.yaml              # API deployment
+│   │   ├── 📄 configmap.yaml                   # Configuration maps
+│   │   ├── 📄 monitoring.yaml                  # Monitoring setup
+│   │   ├── 📄 namespace.yaml                   # Namespace definition
+│   │   ├── 📄 nginx-deployment.yaml            # Nginx deployment
+│   │   ├── 📄 postgres-deployment.yaml         # PostgreSQL deployment
+│   │   ├── 📄 redis-deployment.yaml            # Redis deployment
+│   │   ├── 📄 secrets.yaml                     # Kubernetes secrets
+│   │   └── 📄 web-deployment.yaml              # Web deployment
+│   │
+│   ├── 📁 monitoring/                          # Monitoring Infrastructure
+│   │   ├── 📄 alertmanager.yml                 # Alert manager config
+│   │   ├── 📄 docker-compose.monitoring.yml    # Monitoring stack
+│   │   ├── 📄 jaeger.yml                       # Jaeger tracing config
+│   │   ├── 📄 prometheus.yml                   # Prometheus config
+│   │   ├── 📁 elasticsearch/                   # Elasticsearch config
+│   │   │   ├── 📄 elasticsearch.yml            # Elasticsearch settings
+│   │   │   ├── 📄 filebeat.yml                 # Filebeat config
+│   │   │   └── 📄 logstash.conf                # Logstash config
+│   │   ├── 📁 grafana/                         # Grafana monitoring
+│   │   │   ├── 📁 dashboards/                  # Grafana dashboards
+│   │   │   └── 📁 provisioning/                # Grafana provisioning
+│   │   └── 📁 rules/                           # Monitoring rules
+│   │       └── 📄 alerts.yml                   # Alert rules
+│   │
+│   ├── 📁 nginx/                               # Nginx Infrastructure
+│   │   └── 📄 nginx.conf                       # Main Nginx config
+│   │
+│   ├── 📁 production/                          # Production Infrastructure
+│   │   ├── 📄 docker-compose.production.yml    # Production Docker setup
+│   │   ├── 📄 nginx.conf                       # Production Nginx config
+│   │   ├── 📄 postgresql.conf                  # Production PostgreSQL
+│   │   ├── 📄 prometheus.yml                   # Production monitoring
+│   │   └── 📄 redis.conf                       # Production Redis config
+│   │
+│   ├── 📁 security/                            # Security Infrastructure
+│   │   ├── 📄 fail2ban.conf                    # Fail2ban configuration
+│   │   ├── 📄 nginx.conf                       # Security Nginx config
+│   │   └── 📄 security-headers.conf            # Security headers
+│   │
+│   └── 📁 terraform/                           # Terraform IaC
+│       ├── 📄 acm.tf                           # SSL certificate management
+│       ├── 📄 alb.tf                           # Application load balancer
+│       ├── 📄 cloudfront.tf                    # CloudFront CDN
+│       ├── 📄 eks.tf                           # EKS cluster
+│       ├── 📄 elasticache.tf                   # ElastiCache Redis
+│       ├── 📄 main.tf                          # Main Terraform config
+│       ├── 📄 outputs.tf                       # Terraform outputs
+│       ├── 📄 rds.tf                           # RDS database
+│       ├── 📄 variables.tf                     # Terraform variables
+│       ├── 📄 vpc.tf                           # VPC networking
+│       └── 📁 environments/                    # Environment configs
+│           ├── 📄 development.tfvars           # Development variables
+│           ├── 📄 production.tfvars            # Production variables
+│           └── 📄 staging.tfvars               # Staging variables
+│
+├── 📁 scripts/                                 # Build and Deployment Scripts
+│   ├── 📄 build-all.ps1                        # Build all applications
+│   ├── 📄 dev-all.ps1                          # Start all dev servers
+│   ├── 📄 test-all.ps1                         # Run all tests
+│   ├── 📁 backup/                              # Backup scripts
+│   │   └── 📄 full-system-backup.ps1           # Full system backup
+│   ├── 📁 database/                            # Database scripts
+│   │   ├── 📄 backup.ps1                       # Database backup
+│   │   ├── 📄 migrate.ps1                      # Database migration
+│   │   ├── 📄 restore.ps1                      # Database restore
+│   │   └── 📄 setup-replication.ps1            # Database replication
+│   ├── 📁 deployment/                          # Deployment scripts
+│   │   ├── 📄 blue-green-deploy.ps1            # Blue-green deployment
+│   │   └── 📄 canary-deploy.ps1                # Canary deployment
+│   ├── 📁 disaster-recovery/                   # Disaster recovery
+│   │   ├── 📄 backup-strategy.ps1              # Backup strategy
+│   │   ├── 📄 failover-automation.ps1          # Failover automation
+│   │   └── 📄 restore-procedures.ps1           # Restore procedures
+│   ├── 📁 docker/                              # Docker scripts
+│   │   ├── 📄 build-all.ps1                    # Build Docker images
+│   │   ├── 📄 cleanup.ps1                      # Docker cleanup
+│   │   ├── 📄 start-dev.ps1                    # Start dev containers
+│   │   └── 📄 start-prod.ps1                   # Start prod containers
+│   ├── 📁 monitoring/                          # Monitoring scripts
+│   │   ├── 📄 backup-monitoring-data.ps1       # Backup monitoring data
+│   │   ├── 📄 health-check.ps1                 # Health check script
+│   │   └── 📄 setup-monitoring.ps1             # Setup monitoring
+│   ├── 📁 operations/                          # Operations scripts
+│   │   └── 📄 health-check.ps1                 # Operational health check
+│   ├── 📁 optimization/                        # Optimization scripts
+│   │   ├── 📄 cache-warming.ps1                # Cache warming
+│   │   └── 📄 optimize-db.ps1                  # Database optimization
+│   ├── 📁 scaling/                             # Scaling scripts
+│   │   ├── 📄 auto-scale.ps1                   # Auto-scaling
+│   │   └── 📄 deploy-scaling.ps1               # Deploy scaling
+│   └── 📁 security/                            # Security scripts
+│       ├── 📄 audit.ps1                        # Security audit
+│       ├── 📄 generate-certs.ps1               # Certificate generation
+│       ├── 📄 generate-secrets.ps1             # Secret generation
+│       ├── 📄 penetration-test.ps1             # Penetration testing
+│       └── 📄 scan.ps1                         # Security scanning
+│
+├── 📁 tests/                                   # Testing Infrastructure
+│   ├── 📁 e2e/                                 # End-to-End Tests
+│   │   └── 📄 playwright.staging.config.ts     # Staging E2E config
+│   ├── 📁 health/                              # Health Check Tests
+│   │   ├── 📄 jest.config.js                   # Health test config
+│   │   └── 📄 setup.ts                         # Health test setup
+│   ├── 📁 integration/                         # Integration Tests
+│   │   ├── 📄 jest.config.js                   # Integration test config
+│   │   └── 📄 setup.ts                         # Integration test setup
+│   ├── 📁 performance/                         # Performance Tests
+│   │   └── 📄 load-test.js                     # Load testing script
+│   └── 📁 smoke/                               # Smoke Tests
+│       ├── 📄 jest.config.js                   # Smoke test config
+│       └── 📄 setup.ts                         # Smoke test setup
+│
+├── 📁 tools/                                   # Development Tools
+│   └── 📁 performance/                         # Performance Tools
+│       ├── 📄 benchmark.js                     # Benchmarking tool
+│       ├── 📄 bundle-analyzer.js               # Bundle analysis
+│       ├── 📄 monitoring.js                    # Performance monitoring
+│       ├── 📄 package.json                     # Performance tools config
+│       └── 📄 README.md                        # Performance tools docs
+│
+├── 📁 docs/                                    # Documentation
+│   ├── 📁 disaster-recovery/                   # Disaster Recovery Docs
+│   │   ├── 📄 README.md                        # DR documentation
+│   │   └── 📄 runbooks.md                      # DR runbooks
+│   └── 📁 operations/                          # Operations Documentation
+│       ├── 📄 change-management.md             # Change management
+│       └── 📄 production-runbook.md            # Production runbook
+│
+├── 📁 config/                                  # Configuration Files
+│   ├── 📁 secrets/                             # Secret Management
+│   │   ├── 📄 .env.development                 # Development secrets
+│   │   ├── 📄 .env.example                     # Environment template
+│   │   ├── 📄 .env.production                  # Production secrets
+│   │   ├── 📄 .env.staging                     # Staging secrets
+│   │   └── 📄 README.md                        # Secrets documentation
+│   └── 📁 security/                            # Security Configuration
+│       └── 📁 policies/                        # Security policies
+│
+├── 📁 security/                                # Security Documentation
+│   ├── 📁 compliance/                          # Compliance Documentation
+│   │   ├── 📄 README.md                        # Compliance overview
+│   │   ├── 📁 GDPR/                            # GDPR compliance
+│   │   ├── 📁 NIST/                            # NIST framework
+│   │   ├── 📁 PCI-DSS/                         # PCI-DSS compliance
+│   │   └── 📁 SOC2/                            # SOC2 compliance
+│   ├── 📁 incident-response/                   # Incident Response
+│   │   ├── 📄 README.md                        # Incident response docs
+│   │   ├── 📁 playbooks/                       # Response playbooks
+│   │   └── 📁 procedures/                      # Response procedures
+│   └── 📁 policies/                            # Security Policies
+│       ├── 📄 access-control.md                # Access control policy
+│       ├── 📄 compliance.md                    # Compliance policy
+│       ├── 📄 data-protection.md               # Data protection policy
+│       ├── 📄 network-security.md              # Network security policy
+│       ├── 📄 README.md                        # Security policies overview
+│       └── 📄 vulnerability-management.md      # Vulnerability management
+│
+└── 📁 monitoring/                              # Monitoring (Empty)
 ```
 
-## Key Architecture Features
+## Architecture Analysis
 
-### 1. **Layered Architecture**
+### Monorepo Structure
+The project follows a well-organized monorepo pattern with clear separation of concerns:
 
-- **Controller Layer**: REST API endpoints with comprehensive validation
-- **Service Layer**: Business logic with transaction management
-- **Repository Layer**: Data access with JPA and JOOQ integration
-- **Entity Layer**: Domain models with audit capabilities
+1. **Applications (`apps/`)**: Contains the main applications (web, mobile, api, admin)
+2. **Packages (`packages/`)**: Shared libraries and utilities for code reuse
+3. **Infrastructure (`infrastructure/`)**: Complete DevOps and infrastructure setup
+4. **Scripts (`scripts/`)**: Automation scripts for various operations
+5. **Tests (`tests/`)**: Comprehensive testing infrastructure
+6. **Tools (`tools/`)**: Development and performance tools
+7. **Documentation (`docs/`)**: Project documentation
+8. **Configuration (`config/`, `security/`)**: Configuration and security management
 
-### 2. **Event-Driven Architecture**
+### Key Features
 
-- Comprehensive event system with builders, listeners, and retry mechanisms
-- Dead letter queue for failed events
-- Event versioning and compatibility management
-- Monitoring and metrics for event processing
+#### Type Safety
+- End-to-end TypeScript implementation
+- Shared types across all applications
+- tRPC for type-safe API communication
 
-### 3. **Security Implementation**
+#### Development Experience
+- Turborepo for efficient build orchestration
+- Hot reloading for all applications
+- Comprehensive linting and formatting
+- Pre-commit hooks for code quality
 
-- JWT-based authentication and authorization
-- Custom security expressions and validation
-- File access control and security scanning
-- Comprehensive input validation and sanitization
+#### Production Ready
+- Docker containerization for all services
+- Kubernetes deployment manifests
+- Comprehensive monitoring with Prometheus/Grafana
+- Security policies and compliance documentation
+- Disaster recovery procedures
 
-### 4. **Caching Strategy**
+#### Testing Strategy
+- Unit tests with Jest
+- Integration tests for API endpoints
+- End-to-end tests with Playwright
+- Performance testing with K6
+- Health checks and smoke tests
 
-- Multi-level caching with Redis and Caffeine
-- Event-driven cache invalidation
-- Cache performance monitoring and optimization
-- Cache warmup strategies
+#### Infrastructure as Code
+- Terraform for AWS infrastructure
+- Docker Compose for local development
+- Kubernetes manifests for production
+- Monitoring and alerting setup
+- Security configurations
 
-### 5. **Monitoring & Observability**
+### Development Workflow
 
-- Custom health indicators for database, Redis, and business metrics
-- Performance monitoring with structured logging
-- Correlation ID tracking across requests
-- Comprehensive metrics collection
+The project supports multiple development workflows:
 
-### 6. **File Management**
+1. **Local Development**: Using npm scripts and Turborepo
+2. **Containerized Development**: Using Docker Compose
+3. **Production Deployment**: Using Kubernetes or Docker Compose
+4. **CI/CD**: GitHub Actions integration (configured but files not visible)
 
-- Secure file upload and storage with virus scanning
-- Image processing capabilities
-- Multiple storage backends (Local, S3)
-- File access logging and control
+### Security Considerations
 
-### 7. **Reporting System**
+The project includes comprehensive security measures:
+- Security policies and compliance documentation
+- Incident response procedures
+- Vulnerability management
+- Network security configurations
+- Access control policies
 
-- Template-based report generation
-- Scheduled reporting with subscriptions
-- Report caching and archiving
-- Analytics and business intelligence services
-
-### 8. **Database Management**
-
-- Flyway migrations for schema versioning
-- JOOQ for type-safe complex queries
-- JPA for standard CRUD operations
-- Connection pooling with HikariCP
-
-### 9. **Testing Strategy**
-
-- Comprehensive unit and integration tests
-- Testcontainers for database testing
-- Security and performance validation tests
-- End-to-end workflow testing
-
-### 10. **DevOps & Deployment**
-
-- Multi-stage Docker builds with security best practices
-- Production-ready configuration management
-- Health checks and monitoring endpoints
-- Structured logging with correlation IDs
-
-This project represents a production-ready, enterprise-grade inventory management system with modern architectural patterns, comprehensive security, and extensive monitoring capabilities.
+This project represents a modern, production-ready full-stack application with enterprise-level architecture, comprehensive testing, monitoring, and security considerations.
