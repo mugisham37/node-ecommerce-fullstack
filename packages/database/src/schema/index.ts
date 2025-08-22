@@ -8,6 +8,12 @@ export * from './stock-movements';
 export * from './orders';
 export * from './order-items';
 export * from './user-activities';
+export * from './loyalty';
+export * from './ab-tests';
+export * from './vendor-analytics';
+export * from './advanced-search';
+export * from './notifications';
+export * from './settings';
 
 // Export all relations
 import { categoriesRelations } from './categories';
@@ -18,6 +24,55 @@ import { stockMovementsRelations } from './stock-movements';
 import { ordersRelations } from './orders';
 import { orderItemsRelations } from './order-items';
 import { userActivitiesRelations } from './user-activities';
+import { 
+  loyaltyProgramsRelations, 
+  loyaltyTiersRelations, 
+  userLoyaltyPointsRelations, 
+  loyaltyHistoryRelations, 
+  loyaltyRewardsRelations, 
+  loyaltyRedemptionsRelations, 
+  loyaltyReferralsRelations 
+} from './loyalty';
+import { 
+  abTestsRelations, 
+  abTestVariantsRelations, 
+  userTestAssignmentsRelations, 
+  abTestEventsRelations, 
+  abTestSegmentsRelations, 
+  abTestConversionsRelations 
+} from './ab-tests';
+import { 
+  vendorsRelations, 
+  vendorAnalyticsRelations, 
+  vendorProductAnalyticsRelations, 
+  vendorPayoutsRelations, 
+  vendorReviewsRelations, 
+  vendorPerformanceMetricsRelations 
+} from './vendor-analytics';
+import { 
+  searchIndexesRelations, 
+  searchQueriesRelations, 
+  searchSuggestionsRelations, 
+  searchFiltersRelations, 
+  searchAnalyticsRelations, 
+  searchResultClicksRelations, 
+  savedSearchesRelations 
+} from './advanced-search';
+import { 
+  notificationTemplatesRelations, 
+  notificationsRelations, 
+  userNotificationPreferencesRelations, 
+  pushNotificationDevicesRelations, 
+  notificationCampaignsRelations, 
+  notificationEventsRelations 
+} from './notifications';
+import { 
+  settingsRelations, 
+  settingHistoryRelations, 
+  userSettingsRelations, 
+  featureFlagsRelations, 
+  configurationTemplatesRelations 
+} from './settings';
 
 export const relations = {
   categoriesRelations,
@@ -28,6 +83,43 @@ export const relations = {
   ordersRelations,
   orderItemsRelations,
   userActivitiesRelations,
+  loyaltyProgramsRelations,
+  loyaltyTiersRelations,
+  userLoyaltyPointsRelations,
+  loyaltyHistoryRelations,
+  loyaltyRewardsRelations,
+  loyaltyRedemptionsRelations,
+  loyaltyReferralsRelations,
+  abTestsRelations,
+  abTestVariantsRelations,
+  userTestAssignmentsRelations,
+  abTestEventsRelations,
+  abTestSegmentsRelations,
+  abTestConversionsRelations,
+  vendorsRelations,
+  vendorAnalyticsRelations,
+  vendorProductAnalyticsRelations,
+  vendorPayoutsRelations,
+  vendorReviewsRelations,
+  vendorPerformanceMetricsRelations,
+  searchIndexesRelations,
+  searchQueriesRelations,
+  searchSuggestionsRelations,
+  searchFiltersRelations,
+  searchAnalyticsRelations,
+  searchResultClicksRelations,
+  savedSearchesRelations,
+  notificationTemplatesRelations,
+  notificationsRelations,
+  userNotificationPreferencesRelations,
+  pushNotificationDevicesRelations,
+  notificationCampaignsRelations,
+  notificationEventsRelations,
+  settingsRelations,
+  settingHistoryRelations,
+  userSettingsRelations,
+  featureFlagsRelations,
+  configurationTemplatesRelations,
 };
 
 // Export all tables for Drizzle schema
@@ -40,6 +132,55 @@ import { stockMovements } from './stock-movements';
 import { orders } from './orders';
 import { orderItems } from './order-items';
 import { userActivities } from './user-activities';
+import { 
+  loyaltyPrograms, 
+  loyaltyTiers, 
+  userLoyaltyPoints, 
+  loyaltyHistory, 
+  loyaltyRewards, 
+  loyaltyRedemptions, 
+  loyaltyReferrals 
+} from './loyalty';
+import { 
+  abTests, 
+  abTestVariants, 
+  userTestAssignments, 
+  abTestEvents, 
+  abTestSegments, 
+  abTestConversions 
+} from './ab-tests';
+import { 
+  vendors, 
+  vendorAnalytics, 
+  vendorProductAnalytics, 
+  vendorPayouts, 
+  vendorReviews, 
+  vendorPerformanceMetrics 
+} from './vendor-analytics';
+import { 
+  searchIndexes, 
+  searchQueries, 
+  searchSuggestions, 
+  searchFilters, 
+  searchAnalytics, 
+  searchResultClicks, 
+  savedSearches 
+} from './advanced-search';
+import { 
+  notificationTemplates, 
+  notifications, 
+  userNotificationPreferences, 
+  pushNotificationDevices, 
+  notificationCampaigns, 
+  notificationEvents 
+} from './notifications';
+import { 
+  settings, 
+  settingHistory, 
+  userSettings, 
+  featureFlags, 
+  configurationTemplates 
+} from './settings';
 
 export const schema = {
   users,
@@ -51,6 +192,43 @@ export const schema = {
   orders,
   orderItems,
   userActivities,
+  loyaltyPrograms,
+  loyaltyTiers,
+  userLoyaltyPoints,
+  loyaltyHistory,
+  loyaltyRewards,
+  loyaltyRedemptions,
+  loyaltyReferrals,
+  abTests,
+  abTestVariants,
+  userTestAssignments,
+  abTestEvents,
+  abTestSegments,
+  abTestConversions,
+  vendors,
+  vendorAnalytics,
+  vendorProductAnalytics,
+  vendorPayouts,
+  vendorReviews,
+  vendorPerformanceMetrics,
+  searchIndexes,
+  searchQueries,
+  searchSuggestions,
+  searchFilters,
+  searchAnalytics,
+  searchResultClicks,
+  savedSearches,
+  notificationTemplates,
+  notifications,
+  userNotificationPreferences,
+  pushNotificationDevices,
+  notificationCampaigns,
+  notificationEvents,
+  settings,
+  settingHistory,
+  userSettings,
+  featureFlags,
+  configurationTemplates,
   ...relations,
 };
 
