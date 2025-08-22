@@ -192,7 +192,14 @@
   - Clean up: Delete copied other-backend/src/middleware/language.middleware.ts
   - _Requirements: 1.7_
 
-- [ ] 3. Core Business Logic Services Migration
+- [-] 3. Core Business Logic Services Migration
+
+
+
+
+
+
+
   - Copy all service files from other-backend/src/services/ to analyze business logic
   - Create corresponding service files in apps/api/src/services/ adapted for Drizzle ORM
   - Update service dependencies to use new repository patterns and shared utilities
@@ -200,7 +207,11 @@
   - Clean up: Delete copied other-backend service files after successful migration
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 2.10, 2.11, 2.12_
 
-- [ ] 3.1 Analytics Services Migration
+- [x] 3.1 Analytics Services Migration
+
+
+
+
   - Copy other-backend/src/services/analytics.service.ts to apps/api/src/services/analytics.service.ts
   - Copy other-backend/src/services/vendor-analytics.service.ts to apps/api/src/services/vendor-analytics.service.ts
   - Update analytics.service.ts to use LoyaltyRepository, OrderRepository, ProductRepository from packages/database
@@ -213,7 +224,8 @@
   - Clean up: Delete copied other-backend analytics service files
   - _Requirements: 2.1_
 
-- [ ] 3.2 Loyalty Program Services Migration
+- [-] 3.2 Loyalty Program Services Migration
+
   - Copy other-backend/src/services/loyalty.service.ts to apps/api/src/services/loyalty.service.ts
   - Copy other-backend/src/services/batch-loyalty.service.ts to apps/api/src/services/batch-loyalty.service.ts
   - Copy other-backend/src/services/loyalty-report.service.ts to apps/api/src/services/loyalty-report.service.ts
