@@ -1,14 +1,33 @@
-import { Decimal } from '@prisma/client/runtime/library';
+/**
+ * Analytics utility functions for data processing and calculations
+ */
 
 /**
- * Safely convert Decimal to number
+ * Safely convert Decimal-like values to number
  * @param decimal Decimal value that might be null or undefined
  * @param defaultValue Default value if decimal is null/undefined
  * @returns Number value
  */
-export function safeDecimalToNumber(decimal: Decimal | null | undefined, defaultValue: number = 0): number {
+export function safeDecimalToNumber(decimal: any | null | undefined, defaultValue: number = 0): number {
   if (!decimal) return defaultValue;
-  return decimal.toNumber();
+  
+  // Handle Decimal-like objects with toNumber method
+  if (typeof decimal === 'object' && typeof decimal.toNumber === 'function') {
+    return decimal.toNumber();
+  }
+  
+  // Handle numeric strings
+  if (typeof decimal === 'string') {
+    const num = parseFloat(decimal);
+    return isNaN(num) ? defaultValue : num;
+  }
+  
+  // Handle numbers
+  if (typeof decimal === 'number') {
+    return isNaN(decimal) ? defaultValue : decimal;
+  }
+  
+  return defaultValue;
 }
 
 /**
@@ -25,8 +44,8 @@ export function calculateGrowthPercentage(current: number, previous: number): nu
 }
 
 /**
- * Safely get count from Prisma aggregation result
- * @param countResult Prisma count result
+ * Safely get count from aggregation result
+ * @param countResult Aggregation count result
  * @param field Field to get count for (defaults to 'id')
  * @returns Count value
  */
@@ -39,8 +58,8 @@ export function safeGetCount(countResult: any, field: string = 'id'): number {
 }
 
 /**
- * Safely get sum from Prisma aggregation result
- * @param sumResult Prisma sum result
+ * Safely get sum from aggregation result
+ * @param sumResult Aggregation sum result
  * @param field Field to get sum for
  * @returns Sum value as number
  */
@@ -50,8 +69,8 @@ export function safeGetSum(sumResult: any, field: string): number {
 }
 
 /**
- * Safely get average from Prisma aggregation result
- * @param avgResult Prisma average result
+ * Safely get average from aggregation result
+ * @param avgResult Aggregation average result
  * @param field Field to get average for
  * @returns Average value as number
  */

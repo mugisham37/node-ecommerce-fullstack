@@ -1,16 +1,20 @@
-import { Decimal } from '@prisma/client/runtime/library'
+/**
+ * Decimal utility functions for safe numeric operations
+ * Handles various numeric types including Decimal objects, strings, numbers, null, and undefined
+ */
 
 /**
  * Safely convert a value to a number
- * Handles Prisma Decimal types, strings, numbers, null, and undefined
+ * Handles Decimal types, strings, numbers, null, and undefined
  */
 export function toNumber(value: unknown): number {
   if (typeof value === 'number') {
     return isNaN(value) ? 0 : value
   }
   
-  if (value instanceof Decimal) {
-    return value.toNumber()
+  // Handle Decimal-like objects with toNumber method
+  if (value && typeof value === 'object' && typeof (value as any).toNumber === 'function') {
+    return (value as any).toNumber()
   }
   
   if (typeof value === 'string') {
@@ -78,10 +82,12 @@ export function safeRound(value: unknown, decimals: number = 2): number {
 }
 
 /**
- * Type guard to check if a value is a Prisma Decimal
+ * Type guard to check if a value is a Decimal-like object
  */
-export function isDecimal(value: unknown): value is Decimal {
-  return value instanceof Decimal
+export function isDecimal(value: unknown): boolean {
+  return value !== null && 
+         typeof value === 'object' && 
+         typeof (value as any).toNumber === 'function'
 }
 
 /**

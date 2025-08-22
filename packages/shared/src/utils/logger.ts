@@ -1,8 +1,15 @@
-import winston from 'winston';
-import path from 'path';
-import fs from 'fs';
+// Winston is optional - will be installed when needed
+let winston: any;
+try {
+  winston = require('winston');
+} catch (e) {
+  console.warn('Winston not installed. Logger functionality will be limited.');
+}
 
-const { combine, timestamp, errors, json, colorize, simple, printf } = winston.format;
+import * as path from 'path';
+import * as fs from 'fs';
+
+const { combine, timestamp, errors, json, colorize, simple, printf } = winston?.format || {};
 
 // Define log levels
 const levels = {
@@ -23,7 +30,9 @@ const colors = {
 };
 
 // Tell winston that you want to link the colors
-winston.addColors(colors);
+if (winston?.addColors) {
+  winston.addColors(colors);
+}
 
 // Ensure logs directory exists
 const logsDir = path.join(process.cwd(), 'logs');
@@ -32,14 +41,14 @@ if (!fs.existsSync(logsDir)) {
 }
 
 // Custom format for console output
-const consoleFormat = printf(({ level, message, timestamp, requestId, ...meta }) => {
+const consoleFormat = winston?.format?.printf ? winston.format.printf(({ level, message, timestamp, requestId, ...meta }: any) => {
   const requestInfo = requestId ? `[${requestId}] ` : '';
   const metaInfo = Object.keys(meta).length ? ` ${JSON.stringify(meta)}` : '';
   return `${timestamp} ${level}: ${requestInfo}${message}${metaInfo}`;
-});
+}) : null;
 
 // Create the logger
-const logger = winston.createLogger({
+const logger = winston?.createLogger ? winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',
   levels,
   format: combine(
@@ -64,11 +73,17 @@ const logger = winston.createLogger({
   ],
   // Do not exit on handled exceptions
   exitOnError: false,
-});
+}) : {
+  error: console.error,
+  warn: console.warn,
+  info: console.info,
+  http: console.log,
+  debug: console.debug,
+};
 
 // If we're not in production then log to the `console` with the format:
 // `${info.level}: ${info.message} JSON.stringify({ ...rest }) `
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production' && winston?.transports && logger.add) {
   logger.add(
     new winston.transports.Console({
       format: combine(

@@ -89,7 +89,12 @@
   - Clean up: Remove copied config files from other-backend after integration
   - _Requirements: 1.3_
 
-- [ ] 1.5 Utility Functions Integration
+- [x] 1.5 Utility Functions Integration
+
+
+
+
+
   - Copy other-backend/src/utils/analytics.utils.ts to packages/shared/src/utils/analytics.ts
   - Copy other-backend/src/utils/api-error.ts to packages/shared/src/utils/api-error.ts
   - Copy other-backend/src/utils/async-handler.ts to packages/shared/src/utils/async-handler.ts
