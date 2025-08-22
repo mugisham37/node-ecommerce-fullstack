@@ -1,5 +1,5 @@
-import { OrderStatus, PaymentStatus } from '@prisma/client';
-import { Decimal } from '@prisma/client/runtime/library';
+// Analytics types for tRPC compatibility
+// Migrated from other-backend/src/types/analytics.types.ts
 
 // Base analytics interfaces
 export interface SalesAnalytics {
@@ -46,8 +46,8 @@ export interface RecentOrderSummary {
     email: string;
   } | null;
   totalAmount: number;
-  status: OrderStatus;
-  paymentStatus: PaymentStatus;
+  status: string; // Changed from OrderStatus enum to string for tRPC compatibility
+  paymentStatus: string; // Changed from PaymentStatus enum to string for tRPC compatibility
   createdAt: Date;
   itemCount: number;
 }
@@ -141,21 +141,21 @@ export interface AnalyticsDateRange {
   endDate: Date;
 }
 
-// Prisma aggregation result types
+// Database aggregation result types (adapted for tRPC)
 export interface OrderAggregateResult {
   _sum: {
-    total?: Decimal | null;
-    subtotal?: Decimal | null;
-    taxAmount?: Decimal | null;
-    shippingAmount?: Decimal | null;
-    discountAmount?: Decimal | null;
+    total?: number | null;
+    subtotal?: number | null;
+    taxAmount?: number | null;
+    shippingAmount?: number | null;
+    discountAmount?: number | null;
   } | null;
   _avg: {
-    total?: Decimal | null;
-    subtotal?: Decimal | null;
-    taxAmount?: Decimal | null;
-    shippingAmount?: Decimal | null;
-    discountAmount?: Decimal | null;
+    total?: number | null;
+    subtotal?: number | null;
+    taxAmount?: number | null;
+    shippingAmount?: number | null;
+    discountAmount?: number | null;
   } | null;
   _count: {
     id?: number;
@@ -166,8 +166,8 @@ export interface OrderAggregateResult {
 export interface OrderItemAggregateResult {
   _sum: {
     quantity?: number | null;
-    price?: Decimal | null;
-    total?: Decimal | null;
+    price?: number | null;
+    total?: number | null;
   } | null;
   _count: {
     id?: number;

@@ -2,6 +2,16 @@
  * Shared types export
  */
 
+// Migrated types from other-backend
+export * from './analytics';
+export * from './export';
+export * from './settings';
+export * from './vendor-analytics';
+export * from './loyalty';
+export * from './ab-test';
+export * from './notification';
+export * from './search';
+
 // Common types that will be used across the application
 export interface ApiResponse<T = any> {
   success: boolean;

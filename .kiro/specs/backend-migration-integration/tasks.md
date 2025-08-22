@@ -109,7 +109,12 @@
   - Clean up: Delete copied utility files from other-backend after successful migration
   - _Requirements: 1.4_
 
-- [ ] 1.6 TypeScript Types Migration
+- [x] 1.6 TypeScript Types Migration
+
+
+
+
+
   - Copy other-backend/src/types/analytics.types.ts to packages/shared/src/types/analytics.ts
   - Copy other-backend/src/types/export.types.ts to packages/shared/src/types/export.ts
   - Copy other-backend/src/types/settings.types.ts to packages/shared/src/types/settings.ts

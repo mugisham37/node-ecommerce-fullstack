@@ -1,6 +1,7 @@
-import { Prisma } from '@prisma/client';
+// Export types for tRPC compatibility
+// Migrated from other-backend/src/types/export.types.ts
 
-// Shipping address interface
+// Address interfaces
 export interface ShippingAddress {
   street: string;
   city: string;
@@ -9,7 +10,6 @@ export interface ShippingAddress {
   country: string;
 }
 
-// Billing address interface
 export interface BillingAddress {
   street: string;
   city: string;
@@ -18,90 +18,116 @@ export interface BillingAddress {
   country: string;
 }
 
-// Order with all required relations
-export type OrderWithRelations = Prisma.OrderGetPayload<{
-  include: {
-    user: {
-      select: {
-        id: true;
-        email: true;
-        firstName: true;
-        lastName: true;
-        phone: true;
-      };
+// Order with relations (adapted for tRPC)
+export interface OrderWithRelations {
+  id: string;
+  orderNumber: string;
+  status: string;
+  paymentStatus: string;
+  total: number;
+  subtotal: number;
+  taxAmount: number;
+  shippingAmount: number;
+  discountAmount: number;
+  shippingAddress: ShippingAddress | null;
+  billingAddress: BillingAddress | null;
+  paymentMethod: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  user: {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    phone: string | null;
+  } | null;
+  vendor: {
+    id: string;
+    businessName: string;
+  } | null;
+  items: Array<{
+    id: string;
+    quantity: number;
+    price: number;
+    total: number;
+    product: {
+      id: string;
+      name: string;
+      sku: string | null;
     };
-    vendor: {
-      select: {
-        id: true;
-        businessName: true;
-      };
-    };
-    items: {
-      include: {
-        product: {
-          select: {
-            id: true;
-            name: true;
-            sku: true;
-          };
-        };
-      };
-    };
-  };
-}>;
+  }>;
+}
 
-// Product with relations
-export type ProductWithRelations = Prisma.ProductGetPayload<{
-  include: {
-    vendor: {
-      select: {
-        businessName: true;
-      };
-    };
-    category: {
-      select: {
-        name: true;
-      };
-    };
-    reviews: {
-      select: {
-        rating: true;
-      };
-    };
-  };
-}>;
+// Product with relations (adapted for tRPC)
+export interface ProductWithRelations {
+  id: string;
+  name: string;
+  description: string | null;
+  sku: string | null;
+  price: number;
+  compareAtPrice: number | null;
+  quantity: number;
+  featured: boolean;
+  active: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  vendor: {
+    businessName: string;
+  } | null;
+  category: {
+    name: string;
+  } | null;
+  reviews: Array<{
+    rating: number;
+  }>;
+}
 
-// User with relations
-export type UserWithRelations = Prisma.UserGetPayload<{
-  include: {
-    orders: {
-      select: {
-        id: true;
-        total: true;
-        status: true;
-      };
-    };
-    addresses: true;
-    country: {
-      select: {
-        name: true;
-        code: true;
-      };
-    };
-  };
-}>;
+// User with relations (adapted for tRPC)
+export interface UserWithRelations {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone: string | null;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  lastLoginAt: Date | null;
+  orders: Array<{
+    id: string;
+    total: number;
+    status: string;
+  }>;
+  addresses: Array<{
+    id: string;
+    street: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+    isDefault: boolean;
+  }>;
+  country: {
+    name: string;
+    code: string;
+  } | null;
+}
 
-// Vendor with relations
-export type VendorWithRelations = Prisma.VendorGetPayload<{
-  include: {
-    products: {
-      select: {
-        id: true;
-        price: true;
-      };
-    };
-  };
-}>;
+// Vendor with relations (adapted for tRPC)
+export interface VendorWithRelations {
+  id: string;
+  businessName: string;
+  contactEmail: string;
+  contactPhone: string | null;
+  status: string;
+  commissionRate: number;
+  createdAt: Date;
+  updatedAt: Date;
+  products: Array<{
+    id: string;
+    price: number;
+  }>;
+}
 
 // Export utility types
 export interface ExportColumn {

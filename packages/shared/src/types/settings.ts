@@ -1,10 +1,20 @@
-import { JsonValue, InputJsonValue } from '@prisma/client/runtime/library';
-import { Setting, Prisma } from '@prisma/client';
+// Settings types for tRPC compatibility
+// Migrated from other-backend/src/types/settings.types.ts
 
 /**
  * Extended Setting interface with parsed value
  */
-export interface SettingValue extends Setting {
+export interface SettingValue {
+  id: string;
+  key: string;
+  value: any; // JSON value compatible with tRPC
+  type?: string;
+  category?: string;
+  group?: string | null;
+  description?: string | null;
+  isPublic?: boolean;
+  createdAt: Date;
+  updatedAt: Date;
   parsedValue?: any;
 }
 
@@ -13,7 +23,7 @@ export interface SettingValue extends Setting {
  */
 export interface CreateSettingInput {
   key: string;
-  value: JsonValue;
+  value: any; // JSON value compatible with tRPC
   type?: string;
   category?: string;
   group?: string | null;
@@ -26,7 +36,7 @@ export interface CreateSettingInput {
  */
 export interface UpdateSettingInput {
   key?: string;
-  value?: JsonValue;
+  value?: any; // JSON value compatible with tRPC
   type?: string;
   category?: string;
   group?: string | null;
@@ -77,11 +87,11 @@ export interface ValidationResult {
 }
 
 /**
- * Helper function to safely convert JsonValue to string
- * @param value JsonValue to convert
+ * Helper function to safely convert JSON value to string
+ * @param value JSON value to convert
  * @returns String representation of the value
  */
-export function jsonValueToString(value: JsonValue): string {
+export function jsonValueToString(value: any): string {
   if (value === null || value === undefined) {
     return '';
   }
@@ -95,11 +105,11 @@ export function jsonValueToString(value: JsonValue): string {
 }
 
 /**
- * Helper function to safely parse JsonValue
- * @param value JsonValue to parse
+ * Helper function to safely parse JSON value
+ * @param value JSON value to parse
  * @returns Parsed value or original if parsing fails
  */
-export function parseJsonValue<T = any>(value: JsonValue): T {
+export function parseJsonValue<T = any>(value: any): T {
   if (value === null || value === undefined) {
     return null as T;
   }
@@ -126,11 +136,11 @@ export function validateSettingType(type: string): boolean {
 /**
  * Helper function to serialize value for storage
  * @param value Value to serialize
- * @returns Serialized InputJsonValue
+ * @returns Serialized value compatible with tRPC
  */
-export function serializeValue(value: any): InputJsonValue {
+export function serializeValue(value: any): any {
   if (value === null || value === undefined) {
-    return null as any; // Cast to any to bypass type checking
+    return null;
   }
   if (typeof value === 'string') {
     return value;
@@ -145,11 +155,11 @@ export function serializeValue(value: any): InputJsonValue {
 }
 
 /**
- * Type guard to check if value is JsonValue
+ * Type guard to check if value is valid JSON value
  * @param value Value to check
- * @returns True if value is JsonValue
+ * @returns True if value is valid JSON value
  */
-export function isJsonValue(value: any): value is JsonValue {
+export function isJsonValue(value: any): boolean {
   return (
     value === null ||
     typeof value === 'string' ||
