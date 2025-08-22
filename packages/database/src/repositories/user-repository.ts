@@ -1,6 +1,6 @@
-import { eq, and, or, ilike } from 'drizzle-orm';
+import { eq, and, or, ilike, gte, lte } from 'drizzle-orm';
 import { users } from '../schema/users';
-import { BaseRepository, FilterOptions, PaginationOptions } from './base/base-repository';
+import { BaseRepository, FilterOptions, PaginationOptions, PagedResult } from './base/base-repository';
 import { DatabaseConnection } from '../connection';
 import type { User, NewUser } from '../schema/users';
 
@@ -9,6 +9,12 @@ export interface UserFilters extends FilterOptions {
   role?: string;
   firstName?: string;
   lastName?: string;
+  isActive?: boolean;
+  isEmailVerified?: boolean;
+  registeredAfter?: Date;
+  registeredBefore?: Date;
+  lastLoginAfter?: Date;
+  lastLoginBefore?: Date;
   search?: string; // Search across name and email
 }
 
@@ -18,6 +24,30 @@ export interface UserUpdateData {
   lastName?: string;
   role?: string;
   passwordHash?: string;
+  isActive?: boolean;
+  isEmailVerified?: boolean;
+  isPhoneVerified?: boolean;
+  lastLoginAt?: Date;
+  emailVerifiedAt?: Date;
+  phoneVerifiedAt?: Date;
+  passwordChangedAt?: Date;
+  twoFactorEnabled?: boolean;
+  twoFactorSecret?: string;
+  preferences?: any;
+}
+
+export interface UserWithRelations extends User {
+  // Add relations when needed
+}
+
+export interface UserStats {
+  totalOrders: number;
+  totalSpent: number;
+  averageOrderValue: number;
+  loyaltyPoints: number;
+  loyaltyTier: string;
+  accountAge: number;
+  lastOrderDate: Date | null;
 }
 
 /**
@@ -162,6 +192,149 @@ export class UserRepository extends BaseRepository<
   }
 
   /**
+   * Update last login
+   */
+  async updateLastLogin(id: string): Promise<User | null> {
+    return await this.update(id, {
+      lastLoginAt: new Date(),
+    });
+  }
+
+  /**
+   * Verify email
+   */
+  async verifyEmail(id: string): Promise<User | null> {
+    return await this.update(id, {
+      isEmailVerified: true,
+      emailVerifiedAt: new Date(),
+    });
+  }
+
+  /**
+   * Verify phone
+   */
+  async verifyPhone(id: string): Promise<User | null> {
+    return await this.update(id, {
+      isPhoneVerified: true,
+      phoneVerifiedAt: new Date(),
+    });
+  }
+
+  /**
+   * Update password
+   */
+  async updatePassword(id: string, hashedPassword: string): Promise<User | null> {
+    return await this.update(id, {
+      passwordHash: hashedPassword,
+      passwordChangedAt: new Date(),
+    });
+  }
+
+  /**
+   * Enable/disable two-factor authentication
+   */
+  async updateTwoFactor(id: string, enabled: boolean, secret?: string): Promise<User | null> {
+    return await this.update(id, {
+      twoFactorEnabled: enabled,
+      twoFactorSecret: secret,
+    });
+  }
+
+  /**
+   * Get user statistics
+   */
+  async getUserStats(id: string): Promise<UserStats> {
+    const user = await this.findById(id);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return await this.executeKyselyQuery(async (db) => {
+      // This would need to be implemented based on your order schema
+      const orderStats = {
+        totalOrders: 0,
+        totalSpent: 0,
+        averageOrderValue: 0,
+      };
+
+      const accountAge = Math.floor(
+        (Date.now() - user.createdAt.getTime()) / (1000 * 60 * 60 * 24)
+      );
+
+      return {
+        totalOrders: orderStats.totalOrders,
+        totalSpent: orderStats.totalSpent,
+        averageOrderValue: orderStats.averageOrderValue,
+        loyaltyPoints: 0, // Would come from loyalty system
+        loyaltyTier: 'None',
+        accountAge,
+        lastOrderDate: null,
+      };
+    });
+  }
+
+  /**
+   * Get active users count
+   */
+  async getActiveUsersCount(): Promise<number> {
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    return await this.count({
+      isActive: true,
+      lastLoginAt: { operator: 'gte', value: thirtyDaysAgo },
+    });
+  }
+
+  /**
+   * Get new users count for a period
+   */
+  async getNewUsersCount(startDate: Date, endDate: Date): Promise<number> {
+    return await this.count({
+      createdAt: { operator: 'between', min: startDate, max: endDate },
+    });
+  }
+
+  /**
+   * Update user preferences
+   */
+  async updateUserPreferences(id: string, preferences: any): Promise<User | null> {
+    return await this.update(id, {
+      preferences,
+    });
+  }
+
+  /**
+   * Get users for email campaigns
+   */
+  async getUsersForEmailCampaign(criteria: {
+    roles?: string[];
+    isActive?: boolean;
+    isEmailVerified?: boolean;
+    hasOrders?: boolean;
+  }): Promise<Array<Pick<User, 'id' | 'email' | 'firstName' | 'lastName' | 'preferences'>>> {
+    return await this.executeKyselyQuery(async (db) => {
+      let query = db
+        .selectFrom('users')
+        .select([
+          'id',
+          'email',
+          'first_name as firstName',
+          'last_name as lastName',
+          'preferences',
+        ])
+        .where('is_active', '=', criteria.isActive ?? true)
+        .where('is_email_verified', '=', criteria.isEmailVerified ?? true);
+
+      if (criteria.roles?.length) {
+        query = query.where('role', 'in', criteria.roles);
+      }
+
+      // Note: hasOrders would need to be implemented based on your order schema
+
+      return await query.execute();
+    });
+  }
+
+  /**
    * Override buildWhereConditions to handle user-specific filters
    */
   protected buildWhereConditions(filters: UserFilters): any[] {
@@ -177,6 +350,20 @@ export class UserRepository extends BaseRepository<
           ilike(users.email, searchTerm)
         )
       );
+    }
+
+    // Handle date range filters
+    if (filters.registeredAfter) {
+      conditions.push(gte(users.createdAt, filters.registeredAfter));
+    }
+    if (filters.registeredBefore) {
+      conditions.push(lte(users.createdAt, filters.registeredBefore));
+    }
+    if (filters.lastLoginAfter) {
+      conditions.push(gte(users.lastLoginAt, filters.lastLoginAfter));
+    }
+    if (filters.lastLoginBefore) {
+      conditions.push(lte(users.lastLoginAt, filters.lastLoginBefore));
     }
     
     return conditions;
