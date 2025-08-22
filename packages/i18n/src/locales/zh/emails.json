@@ -1,0 +1,14 @@
+{
+  "welcome": {
+    "subject": "欢迎来到{{storeName}}！",
+    "greeting": "你好{{firstName}}，",
+    "message": "感谢您在我们这里创建账户。我们很高兴您成为我们的客户！",
+    "cta": "访问我们的商店"
+  },
+  "orderConfirmation": {
+    "subject": "订单确认 #{{orderId}}",
+    "greeting": "感谢您的订单，{{firstName}}！",
+    "message": "您的订单已收到并正在处理中。",
+    "cta": "查看订单"
+  }
+}

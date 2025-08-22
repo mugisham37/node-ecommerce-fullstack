@@ -4,6 +4,12 @@ import jwt from 'jsonwebtoken';
 import { DatabaseLayer } from '../database/connection';
 import { CacheService } from '../services/cache/CacheService';
 import { Logger } from '../utils/logger';
+import { 
+  createLanguageContext, 
+  LanguagePreferenceManager,
+  type LanguageContext,
+  type SupportedLanguage 
+} from '../middleware/language';
 
 export interface UserPrincipal {
   id: string;
@@ -92,6 +98,27 @@ export const createContext = async ({
     return req.headers['user-agent'] || 'unknown';
   };
 
+  // Get language context
+  const getLanguageContext = async (): Promise<LanguageContext> => {
+    const queryLang = req.query.lang as string;
+    const cookieLang = req.cookies?.language as string;
+    const acceptLanguage = req.headers['accept-language'] as string;
+    
+    // Get user's preferred language if authenticated
+    let userLanguage: string | null = null;
+    if (user.isAuthenticated) {
+      try {
+        userLanguage = await LanguagePreferenceManager.getUserLanguagePreference(user.id);
+      } catch (error) {
+        logger.warn('Failed to get user language preference:', error);
+      }
+    }
+
+    return createLanguageContext(queryLang, cookieLang, acceptLanguage, userLanguage || undefined);
+  };
+
+  const languageContext = await getLanguageContext();
+
   return {
     req,
     res,
@@ -101,6 +128,8 @@ export const createContext = async ({
     logger,
     clientIp: getClientIp(),
     userAgent: getUserAgent(),
+    languageContext,
+    language: languageContext.language,
     // Helper methods
     requireAuth: () => {
       if (!user.isAuthenticated) {

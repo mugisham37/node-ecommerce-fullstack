@@ -7,6 +7,7 @@ import { orderRouter } from './order.router';
 import { supplierRouter } from './supplier.router';
 import { categoryRouter } from './category.router';
 import { analyticsRouter } from './analytics.router';
+import { i18nRouter } from './i18n';
 
 /**
  * Main Application Router
@@ -64,6 +65,12 @@ export const appRouter = router({
    * Handles business intelligence, performance metrics, and reporting
    */
   analytics: analyticsRouter,
+
+  /**
+   * Internationalization (i18n)
+   * Handles language management, switching, and user preferences
+   */
+  i18n: i18nRouter,
 });
 
 /**
@@ -121,4 +128,10 @@ export type AppRouter = typeof appRouter;
  * - Customer behavior analysis
  * - Business intelligence dashboards
  * - Profit & loss reporting
+ * 
+ * 🌐 Internationalization (i18n)
+ * - Multi-language support (EN, DE, ES, FR, ZH)
+ * - Language detection and switching
+ * - User language preferences
+ * - Localized content delivery
  */

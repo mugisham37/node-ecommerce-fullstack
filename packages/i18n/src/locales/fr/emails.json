@@ -1,0 +1,14 @@
+{
+  "welcome": {
+    "subject": "Bienvenue chez {{storeName}} !",
+    "greeting": "Bonjour {{firstName}},",
+    "message": "Merci d'avoir créé un compte chez nous. Nous sommes ravis de vous compter parmi nos clients !",
+    "cta": "Visiter notre boutique"
+  },
+  "orderConfirmation": {
+    "subject": "Confirmation de commande #{{orderId}}",
+    "greeting": "Merci pour votre commande, {{firstName}} !",
+    "message": "Votre commande a été reçue et est en cours de traitement.",
+    "cta": "Voir la commande"
+  }
+}

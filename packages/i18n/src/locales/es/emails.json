@@ -1,0 +1,33 @@
+{
+  "welcome": {
+    "subject": "¡Bienvenido a {{storeName}}!",
+    "greeting": "Hola {{firstName}},",
+    "message": "Gracias por crear una cuenta con nosotros. ¡Estamos emocionados de tenerte como cliente!",
+    "benefits": "Con tu nueva cuenta, puedes:",
+    "benefit1": "Rastrear tus pedidos",
+    "benefit2": "Ver tu historial de pedidos",
+    "benefit3": "Actualizar tu información de perfil",
+    "benefit4": "Guardar tus productos favoritos",
+    "support": "Si tienes alguna pregunta o necesitas ayuda, no dudes en contactar a nuestro equipo de atención al cliente.",
+    "cta": "Visitar Nuestra Tienda"
+  },
+  "orderConfirmation": {
+    "subject": "Confirmación de Pedido #{{orderId}}",
+    "greeting": "¡Gracias por tu pedido, {{firstName}}!",
+    "message": "Tu pedido ha sido recibido y está siendo procesado. Aquí tienes un resumen de tu compra:",
+    "orderDetails": "Detalles del Pedido",
+    "orderNumber": "Número de Pedido:",
+    "orderDate": "Fecha del Pedido:",
+    "itemsOrdered": "Artículos Pedidos",
+    "product": "Producto",
+    "quantity": "Cant.",
+    "price": "Precio",
+    "total": "Total",
+    "subtotal": "Subtotal:",
+    "tax": "Impuestos:",
+    "shipping": "Envío:",
+    "totalAmount": "Total:",
+    "shippingAddress": "Dirección de Envío",
+    "trackingMessage": "Recibirás otro correo cuando tu pedido sea enviado. También puedes verificar el estado de tu pedido haciendo clic en el botón de abajo.",
+    "cta": "Ver Pedido"
+  }
