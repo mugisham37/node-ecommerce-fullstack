@@ -3,7 +3,13 @@
  */
 
 import { z } from 'zod';
-import { ValidationError } from '@ecommerce/shared/errors';
+// import { ValidationError } from '@ecommerce/shared/errors';
+class ValidationError extends Error {
+  constructor(message: string, public field?: string) {
+    super(message);
+    this.name = 'ValidationError';
+  }
+}
 
 /**
  * Validate data against a Zod schema and throw ValidationError on failure

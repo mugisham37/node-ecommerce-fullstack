@@ -16,9 +16,5 @@
     "**/*.test.ts",
     "**/*.spec.ts"
   ],
-  "references": [
-    {
-      "path": "../shared"
-    }
-  ]
+
 }

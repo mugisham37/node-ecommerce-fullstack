@@ -48,7 +48,10 @@
   - Clean up: Delete copied other-backend repository files after successful migration
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7_
 
-- [-] 1.3 Validation Schema Migration
+- [x] 1.3 Validation Schema Migration
+
+
+
 
 
 
@@ -66,7 +69,9 @@
   - Clean up: Delete copied validator files from other-backend after successful conversion
   - _Requirements: 1.2_
 
-- [ ] 1.4 Configuration and Environment Setup
+- [-] 1.4 Configuration and Environment Setup
+
+
   - Copy other-backend/src/config/cors.ts to apps/api/src/config/cors.ts
   - Copy other-backend/src/config/database.ts and adapt to packages/config/src/database.ts for Drizzle
   - Copy other-backend/src/config/i18n.ts to packages/config/src/i18n.ts

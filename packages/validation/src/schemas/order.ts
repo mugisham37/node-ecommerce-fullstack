@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { OrderStatus } from '@ecommerce/shared/types';
+// import { OrderStatus } from '@ecommerce/shared/types';
+type OrderStatus = 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'refunded';
 
 // Base order item schema
 export const OrderItemSchema = z.object({

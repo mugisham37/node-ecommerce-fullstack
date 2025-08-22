@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { StockMovementType } from '@ecommerce/shared/types';
+// import { StockMovementType } from '@ecommerce/shared/types';
+type StockMovementType = 'in' | 'out' | 'adjustment' | 'transfer';
 
 // Base inventory schema
 export const InventorySchema = z.object({

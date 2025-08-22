@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { UserRole } from '@ecommerce/shared/types';
+// import { UserRole } from '@ecommerce/shared/types';
+type UserRole = 'admin' | 'user' | 'vendor' | 'moderator';
 
 // Base user schema
 export const UserSchema = z.object({

@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { SupplierStatus } from '@ecommerce/shared/types';
+// import { SupplierStatus } from '@ecommerce/shared/types';
+type SupplierStatus = 'active' | 'inactive' | 'pending' | 'suspended';
 
 // Base supplier schema
 export const SupplierSchema = z.object({
