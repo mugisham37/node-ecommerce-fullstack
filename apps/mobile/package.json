@@ -25,7 +25,7 @@
     "@ecommerce/shared": "workspace:*",
     "@ecommerce/validation": "workspace:*",
     "@react-navigation/native": "^6.1.9",
-    "@react-navigation/native-stack": "^6.9.17",
+    "@react-navigation/native-stack": "^7.3.25",
     "@react-navigation/bottom-tabs": "^6.5.11",
     "@react-navigation/drawer": "^6.6.6",
     "@trpc/client": "^10.45.0",
